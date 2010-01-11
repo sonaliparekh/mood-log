@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical" android:layout_height="fill_parent" android:layout_width="fill_parent">
+<TextView android:layout_height="wrap_content" android:layout_width="fill_parent" android:gravity="center" android:text="@string/how_much" android:textSize="24dp"></TextView>
+
+<LinearLayout android:layout_height="wrap_content" android:layout_width="fill_parent" android:padding="3dp">
+<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/less" android:layout_gravity="center"></TextView>
+<SeekBar android:layout_height="wrap_content" android:id="@+id/seek_bar" android:layout_weight="1.0" android:layout_width="wrap_content" android:paddingLeft="3dp" android:paddingRight="3dp" android:max="4" android:progress="2"></SeekBar>
+<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/more" android:layout_gravity="center"></TextView>
+</LinearLayout>
+
+
+
+<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/word_label" android:layout_gravity="center" android:layout_weight="1.0" android:gravity="center"></TextView>
+
+
+
+<LinearLayout android:id="@+id/LinearLayout01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center"><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/save_btn" android:text="@string/save"></Button><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/cancel_btn" android:text="@string/cancel"></Button></LinearLayout>
+
+
+
+
+</LinearLayout>
