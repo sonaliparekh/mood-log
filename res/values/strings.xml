@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mail_report_menu_title">Mail Report</string>
+    <string name="ok">OK</string>
+    <string name="all_time">All Time</string>
+    <string name="last_four_weeks">Last Four Weeks</string>
+    <string name="last_two_weeks">Last Two Weeks</string>
+    <string name="last_week">Last Week</string>
+    <string name="view_log_menu_title">View Log</string>
+    <string name="report">Report</string>
+    <string name="how_much">How Much?</string>
+    
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="more">More</string>
+    <string name="less">Less</string>
+    <string name="help_menu_title">Help</string>
+    
+    <string name="edit_words">Edit Words</string>
+    <string name="log_it">Log It...</string>
+    <string name="how_do_you_feel">How Do You Feel?</string>
+    
+    <string name="app_name">Mood Log</string>
+
+<string name="log_word_dialog_title">How Much?</string>
+
+<string name="generating_email">Generating Email</string>
+<string name="empty_log_alert_title">Empty Log</string>
+<string name="empty_log_alert_message">You need to log some words before sending Email.</string>
+</resources>
