@@ -40,5 +40,9 @@ public interface MoodLog {
     File generateHtmlEmail(Context context, int numDays) throws StorageException;
     
     int getLogEntryCount();
+    
+    /**
+     * Element 0 has the newest log entry.
+     */
     LogEntry getLogEntry(int n);
 }
