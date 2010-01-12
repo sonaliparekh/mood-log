@@ -67,7 +67,8 @@ public class DefaultMoodLog implements MoodLog {
 					words.add(entry.getWord());
 				}
 			}
-			Collections.sort(entries);
+			Collections.sort(entries);		
+			Collections.reverse(entries);
 		} catch (IOException ioe) {
 			throw new StorageException("Unable to load data file", ioe);
 		} finally {
@@ -184,7 +185,8 @@ public class DefaultMoodLog implements MoodLog {
 	public boolean logWord(String word, int wordSize) throws StorageException {
 		rwl.writeLock().lock();
 		try {
-			entries.add(new LogEntry(new Date(), word, wordSize));
+			// put new entries at index 0
+			entries.add(0, new LogEntry(new Date(), word, wordSize));
 			boolean newWord = words.add(word);
 
 			saveDataFile();

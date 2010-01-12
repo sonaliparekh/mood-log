@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="log_is_empty">Log is Empty</string>
     <string name="mail_report_menu_title">Mail Report</string>
     <string name="ok">OK</string>
     <string name="all_time">All Time</string>
