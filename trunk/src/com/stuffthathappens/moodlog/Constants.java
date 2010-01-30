@@ -1,6 +1,8 @@
 package com.stuffthathappens.moodlog;
 
-public interface Constants {
+import android.provider.BaseColumns;
+
+public interface Constants extends BaseColumns {
     /**
      * Intent extra data name, the value is the word the user just selected or wants
      * to save.
@@ -20,4 +22,9 @@ public interface Constants {
     int MAX_WORD_SIZE = 4;
     
     int DATE_RANGE_DIALOG = 1000;
+
+    String LOG_ENTRIES_TABLE = "log_entries";
+    String WORD_SIZE_COL = "word_size";
+    String WORD_COL = "word";
+    String ENTERED_ON_COL = "entered_on";
 }
