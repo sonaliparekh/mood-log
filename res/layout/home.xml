@@ -1,17 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    >
-<TextView  
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" android:text="@string/how_do_you_feel" android:gravity="center_horizontal" android:textSize="24sp"/>
-<ListView android:layout_height="wrap_content" android:layout_weight="1.0" android:id="@android:id/list" android:layout_width="fill_parent">
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+        >
+    
+    <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" android:text="@string/how_do_you_feel"
+            android:gravity="center_horizontal" android:textSize="24sp"/>
 
-</ListView><AutoCompleteTextView android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/word_entry" android:inputType="textCapWords|textAutoComplete" android:maxLength="30"></AutoCompleteTextView><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center" android:id="@+id/log_btn" android:text="@string/log_it"></Button>
+    <ListView android:layout_height="wrap_content"
+              android:layout_weight="1.0"
+              android:id="@android:id/list"
+              android:layout_width="fill_parent">
 
+    </ListView>
 
+    <AutoCompleteTextView android:layout_height="wrap_content" android:layout_width="fill_parent"
+                          android:id="@+id/word_entry" android:inputType="textCapWords|textAutoComplete"
+                          android:maxLength="30"></AutoCompleteTextView>
+
+    <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center"
+            android:id="@+id/log_btn" android:text="@string/log_it"
+            android:paddingLeft="40dp" android:paddingRight="40dp"
+            ></Button>
 
 
 </LinearLayout>

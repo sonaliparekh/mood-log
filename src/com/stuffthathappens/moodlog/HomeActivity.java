@@ -1,9 +1,10 @@
 package com.stuffthathappens.moodlog;
 
-import java.util.List;
-
 import android.app.ListActivity;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -13,26 +14,31 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.*;
+
+import static com.stuffthathappens.moodlog.Constants.*;
 
 public class HomeActivity extends ListActivity implements OnClickListener,
         TextWatcher {
 
     private Button mLogBtn;
     private AutoCompleteTextView mWordEntry;
-    private ListView mWordList;
     private MoodLog mMoodLog;
     private Handler mHandler;
-    private Loader mLoader;
-    private Saver mSaver;
-    private ArrayAdapter<String> mWordListAdapter;
-    private ArrayAdapter<String> mWordEntryAdapter;
+
+    private SimpleCursorAdapter mWordListAdapter;
+    private MoodLogData mMoodLogData;
+
+    private static final String[] FROM_COLS = {
+            WORD_COL, _ID
+    };
+    private static final int[] TO = {R.id.word_item};
+    private static final int WORD_COL_INDEX = 0;
+    private static final String ORDER_BY = String.format(
+            "upper(%s)", WORD_COL);
 
     private static final int LOG_WORD_REQ_CD = 1;
+    private Cursor mCursor;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,7 +48,9 @@ public class HomeActivity extends ListActivity implements OnClickListener,
         mLogBtn = (Button) findViewById(R.id.log_btn);
         mWordEntry = (AutoCompleteTextView) findViewById(R.id.word_entry);
 
-        mWordList = getListView();
+        ListView mWordList = getListView();
+        mWordList.setTextFilterEnabled(true);
+
         mWordEntry.addTextChangedListener(this);
 
         mLogBtn.setOnClickListener(this);
@@ -50,12 +58,43 @@ public class HomeActivity extends ListActivity implements OnClickListener,
         mMoodLog = ((MoodLogApp) getApplication()).getMoodLog();
 
         mHandler = new Handler();
+
+        mMoodLogData = new MoodLogData(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mCursor = getAllWords();
+        mWordListAdapter = new SimpleCursorAdapter(this,
+                R.layout.word_list_item,
+                mCursor,
+                FROM_COLS,
+                TO);
+        setListAdapter(mWordListAdapter);
+
+        // enable type-ahead
+        mWordListAdapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
+            public CharSequence convertToString(Cursor cursor) {
+                return cursor.getString(WORD_COL_INDEX);
+            }
+        });
+        mWordEntry.setAdapter(mWordListAdapter);
+        updateEnabledStates();
+    }
+
+    private Cursor getAllWords() {
+        SQLiteDatabase db = mMoodLogData.getReadableDatabase();
+        Cursor cursor = db.query(Constants.LOG_ENTRIES_TABLE, FROM_COLS, null, null, WORD_COL,
+                null, ORDER_BY);
+        startManagingCursor(cursor);
+        return cursor;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
 
-        boolean empty = mMoodLog.getOldestLogEntryDate() == null;
+        boolean empty = isLogEmpty();
 
         menu.findItem(R.id.mail_report_menu_item).setEnabled(!empty);
         menu.findItem(R.id.view_log_menu_item).setEnabled(!empty);
@@ -65,7 +104,8 @@ public class HomeActivity extends ListActivity implements OnClickListener,
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
-        mWordEntry.setText(mWordListAdapter.getItem(position));
+        mCursor.moveToPosition(position);
+        mWordEntry.setText(mCursor.getString(WORD_COL_INDEX));
     }
 
     @Override
@@ -78,39 +118,17 @@ public class HomeActivity extends ListActivity implements OnClickListener,
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.help_menu_item:
-            startActivity(new Intent(this, HelpActivity.class));
-            return true;
-        case R.id.view_log_menu_item:
-            startActivity(new Intent(this, ViewLogActivity.class));
-            return true;
-        case R.id.mail_report_menu_item:
-            startActivity(new Intent(this, MailReportActivity.class));
-            return true;
+            case R.id.help_menu_item:
+                startActivity(new Intent(this, HelpActivity.class));
+                return true;
+            case R.id.view_log_menu_item:
+                startActivity(new Intent(this, ViewLogActivity.class));
+                return true;
+            case R.id.mail_report_menu_item:
+                startActivity(new Intent(this, MailReportActivity.class));
+                return true;
         }
         return false;
-    }
-
-    @Override
-    protected void onPause() {
-        // if a data load thread is in progress, cancel it
-        mLoader = null;
-        mSaver = null;
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (!mMoodLog.isInitialized()) {
-            // load data in a background thread
-            mLoader = new Loader();
-            new Thread(mLoader).start();
-        } else if (mWordEntryAdapter == null) {
-            rebuildAdapters();
-        }
-        updateEnabledStates();
     }
 
     public void onClick(View src) {
@@ -119,7 +137,7 @@ public class HomeActivity extends ListActivity implements OnClickListener,
 
             if (word != null) {
                 Intent intent = new Intent(this, LogWordActivity.class);
-                intent.putExtra(Constants.EXTRA_WORD, word);
+                intent.putExtra(EXTRA_WORD, word);
                 startActivityForResult(intent, LOG_WORD_REQ_CD);
             } else {
                 // this shouldn't happen, but just to be defensive...
@@ -131,49 +149,76 @@ public class HomeActivity extends ListActivity implements OnClickListener,
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == LOG_WORD_REQ_CD && resultCode == RESULT_OK) {
-            String word = data.getStringExtra(Constants.EXTRA_WORD);
-            int wordSize = data.getIntExtra(Constants.EXTRA_WORD_SIZE,
-                    Constants.INITIAL_WORD_SIZE);
+            String word = data.getStringExtra(EXTRA_WORD);
+            int wordSize = data.getIntExtra(EXTRA_WORD_SIZE,
+                    INITIAL_WORD_SIZE);
             mWordEntry.setText(null);
 
-            mSaver = new Saver(word, wordSize, mMoodLog);
-            new Thread(mSaver).start();
+            insertLogEntry(word, wordSize);
+            Toast.makeText(this, "Logged " + word, Toast.LENGTH_SHORT).show();
             updateEnabledStates();
         }
     }
 
-    private void afterWordLogged(String word, boolean newWord) {
-        Toast.makeText(this, "Logged " + word, Toast.LENGTH_SHORT).show();
-        if (newWord) {
-            rebuildAdapters();
-        }
+    private void insertLogEntry(String word, int wordSize) {
+        SQLiteDatabase db = mMoodLogData.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(ENTERED_ON_COL, System.currentTimeMillis());
+        values.put(WORD_COL, word);
+        values.put(WORD_SIZE_COL, wordSize);
+        db.insertOrThrow(LOG_ENTRIES_TABLE, null, values);
     }
 
     private String getWord() {
         String word = Utils.trimToNull(mWordEntry.getText().toString());
         if (word != null) {
-            word = mMoodLog.findSimilarWord(word);
+            word = findSimilarWord(word);
         }
         return word;
     }
 
     private void updateEnabledStates() {
-        mLogBtn.setEnabled(mSaver == null && getWord() != null);
+        mLogBtn.setEnabled(getWord() != null);
     }
 
-    private void rebuildAdapters() {
-        List<String> words = mMoodLog.getWords();
-        mWordListAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, words);
-        mWordEntryAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_dropdown_item_1line, words);
+    /**
+     * Finds an existing word, looking for case-insensitive matches. This
+     * ensures we don't add new words that only differ from existing words by
+     * capitalization.
+     *
+     * @param newWord the proposed new word.
+     * @return a non-null word, either the newWord or one that already exists
+     *         but has a different capitalization.
+     */
+    private String findSimilarWord(String newWord) {
+        SQLiteDatabase db = mMoodLogData.getReadableDatabase();
+        try {
+            Cursor cursor = db.rawQuery(String.format(
+                    "select %s from %s where upper(%s) like upper(?)",
+                    WORD_COL, LOG_ENTRIES_TABLE, WORD_COL),
+                    new String[]{newWord});
 
-        mWordList.setAdapter(mWordListAdapter);
-        mWordEntry.setAdapter(mWordEntryAdapter);
+            if (cursor.moveToFirst()) {
+                return cursor.getString(0);
+            }
 
-        mWordList.setTextFilterEnabled(true);
+            return newWord;
+        } finally {
+            db.close();
+        }
+    }
 
-        updateEnabledStates();
+    private boolean isLogEmpty() {
+        SQLiteDatabase db = mMoodLogData.getReadableDatabase();
+        try {
+            Cursor cursor = db.rawQuery(String.format(
+                    "select count(*) from %s", LOG_ENTRIES_TABLE), null);
+
+            cursor.moveToFirst();
+            return cursor.getInt(0) == 0;
+        } finally {
+            db.close();
+        }
     }
 
     public void afterTextChanged(Editable src) {
@@ -181,74 +226,9 @@ public class HomeActivity extends ListActivity implements OnClickListener,
     }
 
     public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-            int arg3) {
+                                  int arg3) {
     }
 
     public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-    }
-
-    // load in a thread because the DefaultMoodLog constructor might take some
-    // time to load from the file system
-    private class Loader implements Runnable {
-        public void run() {
-            mHandler.post(new Runnable() {
-                public void run() {
-                    // ignore the results if the activity was paused and the
-                    // loader no longer matches this thread
-                    if (mLoader == Loader.this) {
-                        try {
-                            mMoodLog.init();
-                            rebuildAdapters();
-                        } catch (StorageException e) {
-                            // TODO show an exception dialog
-                            e.printStackTrace();
-                        } finally {
-                            mLoader = null;
-                        }
-                    }
-                }
-            });
-        }
-    }
-
-    private class Saver implements Runnable {
-        private final String word;
-        private final int wordSize;
-        private final MoodLog ml;
-
-        public Saver(String word, int wordSize, MoodLog ml) {
-            this.word = word;
-            this.wordSize = wordSize;
-            this.ml = ml;
-        }
-
-        public void run() {
-            try {
-                final boolean changed = ml.logWord(word, wordSize);
-
-                mHandler.post(new Runnable() {
-                    public void run() {
-                        if (mSaver == Saver.this) {
-                            try {
-                                afterWordLogged(word, changed);
-                            } finally {
-                                mSaver = null;
-                            }
-                        }
-                    }
-                });
-            } catch (StorageException se) {
-                // TODO show an error dialog, log this
-
-                mHandler.post(new Runnable() {
-                    public void run() {
-                        if (mSaver == Saver.this) {
-                            mSaver = null;
-                            updateEnabledStates();
-                        }
-                    }
-                });
-            }
-        }
     }
 }

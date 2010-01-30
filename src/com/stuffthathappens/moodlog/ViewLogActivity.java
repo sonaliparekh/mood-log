@@ -1,87 +1,88 @@
 package com.stuffthathappens.moodlog;
 
-import java.text.SimpleDateFormat;
-
 import android.app.ListActivity;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static android.provider.BaseColumns._ID;
+import static com.stuffthathappens.moodlog.Constants.*;
 
 public class ViewLogActivity extends ListActivity {
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.view_log);
+    private static final String[] FROM_COLS = {
+            WORD_COL,
+            ENTERED_ON_COL,
+            WORD_SIZE_COL,
+            _ID
+    };
+    private static final int[] TO = {
+            R.id.log_item_word,
+            R.id.log_item_date,
+            R.id.log_item_word
+    };
+    private static final String ORDER_BY = String.format(
+            "%s desc", ENTERED_ON_COL);
 
-		MoodLog ml = ((MoodLogApp) getApplication()).getMoodLog();
-		setListAdapter(new LogListAdapter(ml));
-	}
+    Date mDate = new Date();
 
-	private class LogListAdapter extends BaseAdapter {
+    private MoodLogData mMoodLogData;
+    private static final int WORD_COL_INDEX = 0;
+    private static final int ENTERED_ON_COL_INDEX = 1;
 
-		private final MoodLog mMoodLog;
-		private final SimpleDateFormat fmt = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+    private static final int WORD_SIZE_COL_INDEX = 2;
 
-		LogListAdapter(MoodLog ml) {
-			mMoodLog = ml;
-		}
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
 
-		@Override
-		public int getCount() {
-			return mMoodLog.getLogEntryCount();
-		}
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.view_log);
 
-		@Override
-		public Object getItem(int position) {
-			return mMoodLog.getLogEntry(position);
-		}
+        mMoodLogData = new MoodLogData(this);
 
-		@Override
-		public long getItemId(int position) {
-			return mMoodLog.getLogEntry(position).getDate().getTime();
-		}
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
+                R.layout.log_list_item,
+                getAllWords(),
+                FROM_COLS,
+                TO);
+        adapter.setViewBinder(new LogBinder());
 
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			View v = convertView;
+        setListAdapter(adapter);
+    }
 
-			if (v == null) {
-				v = ((LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE))
-						.inflate(R.layout.log_row, null);
-			}
+    private Cursor getAllWords() {
+        SQLiteDatabase db = mMoodLogData.getReadableDatabase();
+        Cursor cursor = db.query(LOG_ENTRIES_TABLE, FROM_COLS, null, null, null,
+                null, ORDER_BY);
+        startManagingCursor(cursor);
+        return cursor;
+    }
 
-			LogEntry logEntry = mMoodLog.getLogEntry(position);
 
-			TextView dateView = (TextView) v.findViewById(R.id.log_item_date);
-			TextView wordView = (TextView) v.findViewById(R.id.log_item_text);
+    private class LogBinder implements SimpleCursorAdapter.ViewBinder {
 
-			dateView.setText(fmt.format(logEntry.getDate()));
-			wordView.setText(logEntry.getWord());
-
-			float textSize = 12f;
-			switch (logEntry.getSize()) {
-			case 0:
-				textSize = 12f;
-				break;
-			case 1:
-				textSize = 16f;
-				break;
-			case 2:
-				textSize = 22f;
-				break;
-			case 3:
-				textSize = 28f;
-				break;
-			case 4:
-				textSize = 36f;
-				break;
-			}
-			wordView.setTextSize(textSize);
-			return v;
-		}
-	}
+        public boolean setViewValue(View view, Cursor cursor, int column) {
+            switch (column) {
+                case WORD_COL_INDEX:
+                    ((TextView) view).setText(cursor.getString(column));
+                    return true;
+                case ENTERED_ON_COL_INDEX:
+                    mDate.setTime(cursor.getLong(column));
+                    ((TextView) view).setText(dateFormat.format(mDate));
+                    return true;
+                case WORD_SIZE_COL_INDEX:
+                    int wordSize = cursor.getInt(column);
+                    ((TextView) view).setTextSize(12f + wordSize * 3);
+                    return true;
+            }
+            return false;
+        }
+    }
 }
