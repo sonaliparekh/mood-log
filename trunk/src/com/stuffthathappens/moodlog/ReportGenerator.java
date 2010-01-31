@@ -30,6 +30,8 @@ public class ReportGenerator {
         SQLiteDatabase db = null;
         Cursor cursor = null;
 
+        // TODO if numDays is -1 this is broken
+
         try {
             db = data.getReadableDatabase();
             cursor = db.query(LOG_ENTRIES_TABLE,
