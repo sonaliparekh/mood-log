@@ -1,13 +1,11 @@
 package com.stuffthathappens.moodlog;
 
-import java.io.ByteArrayOutputStream;
-import java.io.Closeable;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-
 import android.content.Context;
 import android.content.res.Resources;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
+import java.io.*;
 
 public class Utils {
     public static String trimToNull(String s) {
@@ -39,7 +37,7 @@ public class Utils {
             close(in);
         }
     }
-    
+
     /**
      * Moves a file, replacing dest if it exists.
      */
@@ -52,8 +50,8 @@ public class Utils {
         }
         dest.getParentFile().mkdirs();
         if (!src.renameTo(dest)) {
-            throw new StorageException("Unable to move " + src.getAbsolutePath() + 
-                    " to " + dest.getAbsolutePath());            
+            throw new StorageException("Unable to move " + src.getAbsolutePath() +
+                    " to " + dest.getAbsolutePath());
         }
     }
 
@@ -67,4 +65,23 @@ public class Utils {
         }
     }
 
+    public static void close(SQLiteDatabase db) {
+        if (db != null) {
+            try {
+                db.close();
+            } catch (Throwable ignored) {
+                // ignored
+            }
+        }
+    }
+
+    public static void close(Cursor cursor) {
+        if (cursor != null) {
+            try {
+                cursor.close();
+            } catch (Throwable ignored) {
+                // ignored
+            }
+        }
+    }
 }
