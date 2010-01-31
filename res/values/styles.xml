@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<style parent="@android:style/Theme.Black.NoTitleBar" name="MoodLog"></style>
+    <style parent="@android:style/Theme.Light.NoTitleBar.Fullscreen"
+           name="MoodLog">
+        <item name="android:textColor">#ff000000</item>
+
+    </style>
+
+    <style name="button_bar">
+        <item name="android:paddingTop">@dimen/button_bar_padding_top</item>
+        <item name="android:paddingBottom">@dimen/button_bar_padding_bottom</item>
+        <item name="android:background">@drawable/button_bar_gradient</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
 </resources>

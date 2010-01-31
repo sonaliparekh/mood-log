@@ -25,14 +25,19 @@
                           android:inputType="textCapWords|textAutoComplete"
                           android:maxLength="30"></AutoCompleteTextView>
 
-    <Button android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:id="@+id/log_btn"
-            android:text="@string/log_it"
-            android:paddingLeft="40dp"
-            android:paddingRight="40dp"
-            ></Button>
+    <LinearLayout
+            style="@style/button_bar">
+
+
+        <Button android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/log_btn"
+                android:text="@string/log_it"
+                android:paddingLeft="40dp"
+                android:paddingRight="40dp"
+                ></Button>
+
+    </LinearLayout>
 
 
 </LinearLayout>
