@@ -4,11 +4,13 @@
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
         >
-    
+
     <TextView
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content" android:text="@string/how_do_you_feel"
-            android:gravity="center_horizontal" android:textSize="24sp"/>
+            android:layout_height="wrap_content"
+            android:text="@string/how_do_you_feel"
+            android:gravity="center_horizontal"
+            android:textSize="24sp"/>
 
     <ListView android:layout_height="wrap_content"
               android:layout_weight="1.0"
@@ -17,13 +19,19 @@
 
     </ListView>
 
-    <AutoCompleteTextView android:layout_height="wrap_content" android:layout_width="fill_parent"
-                          android:id="@+id/word_entry" android:inputType="textCapWords|textAutoComplete"
+    <AutoCompleteTextView android:layout_height="wrap_content"
+                          android:layout_width="fill_parent"
+                          android:id="@+id/word_entry"
+                          android:inputType="textCapWords|textAutoComplete"
                           android:maxLength="30"></AutoCompleteTextView>
 
-    <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center"
-            android:id="@+id/log_btn" android:text="@string/log_it"
-            android:paddingLeft="40dp" android:paddingRight="40dp"
+    <Button android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/log_btn"
+            android:text="@string/log_it"
+            android:paddingLeft="40dp"
+            android:paddingRight="40dp"
             ></Button>
 
 

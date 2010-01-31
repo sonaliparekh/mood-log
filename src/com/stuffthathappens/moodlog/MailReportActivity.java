@@ -28,7 +28,7 @@ public class MailReportActivity extends Activity implements OnClickListener {
 
     private ProgressDialog mProgressDialog;
     private Handler mHandler;
-    private MoodLog mMoodLog;
+    private ReportGenerator mReportGenerator;
 
     private static final String TAG = "DateRangeDialog";
 
@@ -36,7 +36,7 @@ public class MailReportActivity extends Activity implements OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mMoodLog = ((MoodLogApp) getApplication()).getMoodLog();
+        mReportGenerator = new ReportGenerator();
 
         setContentView(R.layout.mail_report);
 
@@ -110,7 +110,7 @@ public class MailReportActivity extends Activity implements OnClickListener {
 
         public void run() {
             try {
-                final File htmlEmail = mMoodLog.generateHtmlEmail(context,
+                final File htmlEmail = mReportGenerator.generateHtmlEmail(context,
                         numDays);
                 mHandler.post(new Runnable() {
                     public void run() {

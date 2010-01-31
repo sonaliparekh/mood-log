@@ -23,7 +23,6 @@ public class HomeActivity extends ListActivity implements OnClickListener,
 
     private Button mLogBtn;
     private AutoCompleteTextView mWordEntry;
-    private MoodLog mMoodLog;
     private Handler mHandler;
 
     private SimpleCursorAdapter mWordListAdapter;
@@ -55,8 +54,6 @@ public class HomeActivity extends ListActivity implements OnClickListener,
 
         mLogBtn.setOnClickListener(this);
 
-        mMoodLog = ((MoodLogApp) getApplication()).getMoodLog();
-
         mHandler = new Handler();
 
         mMoodLogData = new MoodLogData(this);
@@ -85,8 +82,8 @@ public class HomeActivity extends ListActivity implements OnClickListener,
 
     private Cursor getAllWords() {
         SQLiteDatabase db = mMoodLogData.getReadableDatabase();
-        Cursor cursor = db.query(Constants.LOG_ENTRIES_TABLE, FROM_COLS, null, null, WORD_COL,
-                null, ORDER_BY);
+        Cursor cursor = db.query(true, Constants.LOG_ENTRIES_TABLE, FROM_COLS, null, null, WORD_COL,
+                null, ORDER_BY, null);
         startManagingCursor(cursor);
         return cursor;
     }
