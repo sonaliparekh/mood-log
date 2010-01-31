@@ -22,7 +22,7 @@ public class HomeActivity extends ListActivity implements OnClickListener,
         TextWatcher {
 
     private Button mLogBtn;
-    private AutoCompleteTextView mWordEntry;
+    private EditText mWordEntry;
     private Handler mHandler;
 
     private SimpleCursorAdapter mWordListAdapter;
@@ -45,7 +45,7 @@ public class HomeActivity extends ListActivity implements OnClickListener,
         setContentView(R.layout.home);
 
         mLogBtn = (Button) findViewById(R.id.log_btn);
-        mWordEntry = (AutoCompleteTextView) findViewById(R.id.word_entry);
+        mWordEntry = (EditText) findViewById(R.id.word_entry);
 
         ListView mWordList = getListView();
         mWordList.setTextFilterEnabled(true);
@@ -76,7 +76,7 @@ public class HomeActivity extends ListActivity implements OnClickListener,
                 return cursor.getString(WORD_COL_INDEX);
             }
         });
-        mWordEntry.setAdapter(mWordListAdapter);
+       // TODO do we want type ahead? mWordEntry.setAdapter(mWordListAdapter);
         updateEnabledStates();
     }
 

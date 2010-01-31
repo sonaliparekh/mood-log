@@ -19,11 +19,13 @@
 
     </ListView>
 
-    <AutoCompleteTextView android:layout_height="wrap_content"
-                          android:layout_width="fill_parent"
-                          android:id="@+id/word_entry"
-                          android:inputType="textCapWords|textAutoComplete"
-                          android:maxLength="30"></AutoCompleteTextView>
+    <EditText android:layout_height="wrap_content"
+              android:layout_width="fill_parent"
+              android:id="@+id/word_entry"
+              android:inputType="textCapWords"
+              android:maxLines="1"
+              android:maxLength="30"
+              android:imeOptions="actionDone"></EditText>
 
     <LinearLayout
             style="@style/button_bar">
