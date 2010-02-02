@@ -6,11 +6,8 @@
         >
 
     <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/how_do_you_feel"
-            android:gravity="center_horizontal"
-            android:textSize="24sp"/>
+            style="@style/title_heading"
+            android:text="@string/how_do_you_feel"/>
 
     <ListView android:layout_height="wrap_content"
               android:layout_weight="1.0"

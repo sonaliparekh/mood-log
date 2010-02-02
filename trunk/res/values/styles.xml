@@ -3,7 +3,7 @@
     <style parent="@android:style/Theme.Light.NoTitleBar.Fullscreen"
            name="MoodLog">
         <item name="android:textColor">#ff000000</item>
-
+        <item name="android:buttonStyle">@style/Button</item>
     </style>
 
     <style name="button_bar">
@@ -13,6 +13,43 @@
         <item name="android:gravity">center</item>
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <!--
+    <style name="title_bar">
+        <item name="android:paddingTop">@dimen/title_bar_padding_top</item>
+        <item name="android:paddingBottom">@dimen/title_bar_padding_bottom</item>
+        <item name="android:background">@drawable/title_bar_gradient</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    -->
+
+    <style name="title_heading">
+        <item name="android:paddingTop">@dimen/title_bar_padding_top</item>
+        <item name="android:paddingBottom">@dimen/title_bar_padding_bottom</item>
+        <item name="android:background">@drawable/title_bar_gradient</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">#ffffffff</item>
+        <item name="android:shadowColor">#ffadb3ba</item>
+        <item name="android:shadowDx">-1</item>
+        <item name="android:shadowDy">-1</item>
+        <item name="android:shadowRadius">0.1</item>
+        <item name="android:textSize">26sp</item>
+    </style>
+
+    <style name="Button" parent="@android:style/Widget.Button">
+        <item name="android:background">@drawable/btn_selector</item>
+        <item name="android:shadowColor">#ffadb3ba</item>
+        <item name="android:shadowDx">-1</item>
+        <item name="android:shadowDy">-1</item>
+        <item name="android:shadowRadius">0.1</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textColor">@color/btn_selector</item>
+        <!--<item name="android:gravity">center</item>-->
     </style>
 
 </resources>
