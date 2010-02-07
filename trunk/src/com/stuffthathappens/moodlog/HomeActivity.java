@@ -76,7 +76,6 @@ public class HomeActivity extends ListActivity implements OnClickListener,
                 return cursor.getString(WORD_COL_INDEX);
             }
         });
-       // TODO do we want type ahead? mWordEntry.setAdapter(mWordListAdapter);
         updateEnabledStates();
     }
 

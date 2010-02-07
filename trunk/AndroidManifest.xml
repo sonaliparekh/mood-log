@@ -6,12 +6,12 @@
 
     <application android:icon="@drawable/icon"
                  android:label="@string/app_name"
-                 android:theme="@style/MoodLog"
-                 android:debuggable="true">
+                 android:debuggable="true"
+                 android:theme="@style/MoodLog">
 
+        <!--android:theme="@style/MoodLog"-->
         <activity android:name=".HomeActivity"
                   android:label="@string/app_name"
-                  android:theme="@style/MoodLog"
                   android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
