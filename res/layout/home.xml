@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-        >
+              android:layout_height="fill_parent">
 
-    <TextView
-            style="@style/title_heading"
-            android:text="@string/how_do_you_feel"/>
+    <TextView style="@style/title_heading"
+              android:text="@string/how_do_you_feel"/>
 
-    <ListView android:layout_height="wrap_content"
+    <ListView android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
               android:layout_weight="1.0"
-              android:id="@android:id/list"
-              android:layout_width="fill_parent">
-
-    </ListView>
+              android:id="@android:id/list"/>
 
     <EditText android:layout_height="wrap_content"
               android:layout_width="fill_parent"
@@ -22,20 +19,16 @@
               android:inputType="textCapWords"
               android:maxLines="1"
               android:maxLength="30"
-              android:imeOptions="actionDone"></EditText>
+              android:imeOptions="actionDone"/>
 
-    <LinearLayout
-            style="@style/button_bar">
-
+    <LinearLayout style="@style/button_bar">
 
         <Button android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/log_btn"
                 android:text="@string/log_it"
                 android:paddingLeft="40dp"
-                android:paddingRight="40dp"
-                ></Button>
-
+                android:paddingRight="40dp"/>
     </LinearLayout>
 
 
