@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="log_odd_row_background">#ffffeac8</color>
+    <color name="log_even_row_background">#fffff0d7</color>
+    <color name="log_word_foreground">#ff000000</color>
+    <color name="log_date_foreground">#ff848484</color>
+</resources>
