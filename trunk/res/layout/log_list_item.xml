@@ -1,17 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_height="?android:attr/listPreferredItemHeight" android:layout_width="fill_parent"
-        android:padding="6dp" android:orientation="vertical">
+        android:layout_height="?android:attr/listPreferredItemHeight"
+        android:layout_width="fill_parent"
+        android:padding="6sp"
+        android:orientation="horizontal">
 
     <TextView android:layout_height="wrap_content"
-              android:layout_width="fill_parent"
-              android:id="@+id/log_item_date"
-              android:textSize="18dp" 
-              ></TextView>
-
-    <TextView android:layout_height="wrap_content"
-              android:layout_width="fill_parent"
+              android:layout_width="wrap_content"
+              android:layout_weight="1"
               android:id="@+id/log_item_word"
-              android:layout_marginLeft="12dp"></TextView>
+              android:textSize="18dp"
+              android:textColor="@color/log_word_foreground"/>
+
+    <LinearLayout android:layout_height="wrap_content"
+                  android:layout_width="wrap_content"
+                  android:orientation="vertical">
+
+        <TextView android:layout_height="wrap_content"
+                  android:layout_width="wrap_content"
+                  android:id="@+id/log_item_date"
+                  android:textColor="@color/log_date_foreground"/>
+
+        <TextView android:layout_height="wrap_content"
+                  android:layout_width="wrap_content"
+                  android:id="@+id/log_item_time"
+                  android:textColor="@color/log_date_foreground"/>
+
+    </LinearLayout>
 </LinearLayout>
