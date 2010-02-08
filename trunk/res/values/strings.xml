@@ -10,22 +10,27 @@
     <string name="view_log_menu_title">View Log</string>
     <string name="report">Report</string>
     <string name="how_much">How Much?</string>
-    
+
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
     <string name="more">More</string>
     <string name="less">Less</string>
     <string name="help_menu_title">Help</string>
-    
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="confirm_delete_msg">Are you sure you want to delete this word? All log entries for it will be deleted.</string>
+
     <string name="edit_words">Edit Words</string>
     <string name="log_it">Log It...</string>
     <string name="how_do_you_feel">How Do You Feel?</string>
-    
+
     <string name="app_name">Mood Log</string>
 
-<string name="log_word_dialog_title">How Much?</string>
+    <string name="log_word_dialog_title">How Much?</string>
 
-<string name="generating_email">Generating Email</string>
-<string name="empty_log_alert_title">Empty Log</string>
-<string name="empty_log_alert_message">You need to log some words before sending Email.</string>
+    <string name="generating_email">Generating Email</string>
+    <string name="empty_log_alert_title">Empty Log</string>
+    <string name="empty_log_alert_message">You need to log some words before sending Email.</string>
 </resources>

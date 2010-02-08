@@ -1,7 +1,9 @@
 package com.stuffthathappens.moodlog;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,12 +11,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 import android.view.View.OnClickListener;
 import android.widget.*;
+
+import java.text.MessageFormat;
 
 import static com.stuffthathappens.moodlog.Constants.*;
 
@@ -39,6 +40,10 @@ public class HomeActivity extends ListActivity implements OnClickListener,
     private static final int LOG_WORD_REQ_CD = 1;
     private Cursor mCursor;
 
+    private static final int CONTEXT_MENU_DELETE_ITEM = 1;
+    private static final int CONTEXT_MENU_EDIT_ITEM = 2;
+    private String mSelectedWord = null;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,8 +52,8 @@ public class HomeActivity extends ListActivity implements OnClickListener,
         mLogBtn = (Button) findViewById(R.id.log_btn);
         mWordEntry = (EditText) findViewById(R.id.word_entry);
 
-        ListView mWordList = getListView();
-        mWordList.setTextFilterEnabled(true);
+        final ListView listView = getListView();
+        listView.setTextFilterEnabled(true);
 
         mWordEntry.addTextChangedListener(this);
 
@@ -57,6 +62,53 @@ public class HomeActivity extends ListActivity implements OnClickListener,
         mHandler = new Handler();
 
         mMoodLogData = new MoodLogData(this);
+
+        listView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+            public void onCreateContextMenu(ContextMenu contextMenu,
+                                            View view,
+                                            ContextMenu.ContextMenuInfo menuInfo) {
+                AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+                mSelectedWord = ((TextView) info.targetView).getText().toString();
+                contextMenu.setHeaderTitle(mSelectedWord);
+                contextMenu.add(0, CONTEXT_MENU_EDIT_ITEM, 0, R.string.edit);
+                contextMenu.add(0, CONTEXT_MENU_DELETE_ITEM, 1, R.string.delete);
+            }
+        });
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case CONTEXT_MENU_EDIT_ITEM:
+                // TODO
+                return true;
+            case CONTEXT_MENU_DELETE_ITEM:
+                confirmDelete();
+                return true;
+        }
+        return false;
+    }
+
+    private void confirmDelete() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(mSelectedWord)
+                .setMessage(R.string.confirm_delete_msg)
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        doDelete(mSelectedWord);
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        builder.create().show();
+    }
+
+    private void doDelete(String victim) {
+        // TODO
     }
 
     @Override
