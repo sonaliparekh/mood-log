@@ -15,8 +15,6 @@ import android.view.*;
 import android.view.View.OnClickListener;
 import android.widget.*;
 
-import java.text.MessageFormat;
-
 import static com.stuffthathappens.moodlog.Constants.*;
 
 public class HomeActivity extends ListActivity implements OnClickListener,
@@ -95,7 +93,7 @@ public class HomeActivity extends ListActivity implements OnClickListener,
                 .setMessage(R.string.confirm_delete_msg)
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        doDelete(mSelectedWord);
+                        doDeleteWord(mSelectedWord);
                         dialog.dismiss();
                     }
                 })
@@ -105,10 +103,6 @@ public class HomeActivity extends ListActivity implements OnClickListener,
                     }
                 });
         builder.create().show();
-    }
-
-    private void doDelete(String victim) {
-        // TODO
     }
 
     @Override
@@ -215,6 +209,12 @@ public class HomeActivity extends ListActivity implements OnClickListener,
         values.put(WORD_COL, word);
         values.put(WORD_SIZE_COL, wordSize);
         db.insertOrThrow(LOG_ENTRIES_TABLE, null, values);
+    }
+
+    private void doDeleteWord(String victim) {
+        SQLiteDatabase db = mMoodLogData.getWritableDatabase();
+        db.delete(LOG_ENTRIES_TABLE, WORD_COL + " = ?", new String[] { victim });
+        mCursor.requery();
     }
 
     private String getWord() {
