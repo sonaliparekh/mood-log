@@ -1,30 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="fill_parent" android:layout_height="fill_parent" android:orientation="vertical">
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
 
-    <RadioGroup android:layout_width="wrap_content" android:layout_height="wrap_content"
+    <TextView style="@style/title_heading"
+              android:text="@string/mail_report"/>
+
+
+    <RadioGroup android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:id="@+id/date_range_radio_group">
-        <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content"
-                     android:id="@+id/last_week_radio" android:text="@string/last_week"
-                     android:checked="true"></RadioButton>
-        <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content"
-                     android:text="@string/last_two_weeks" android:id="@+id/last_two_weeks_radio"></RadioButton>
-        <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content"
-                     android:text="@string/last_four_weeks" android:id="@+id/last_four_weeks_radio"></RadioButton>
-        <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content"
-                     android:text="@string/all_time" android:id="@+id/all_time_radio"></RadioButton>
+
+        <!--<include layout="@layout/mail_report_radios"/>-->
+
+        <RadioButton android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:id="@+id/last_week_radio"
+                     android:text="@string/last_week"
+                     android:checked="true"/>
+        <RadioButton android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:text="@string/last_two_weeks"
+                     android:id="@+id/last_two_weeks_radio"/>
+        <RadioButton android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:text="@string/last_four_weeks"
+                     android:id="@+id/last_four_weeks_radio"/>
+        <RadioButton android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:text="@string/all_time"
+                     android:id="@+id/all_time_radio"/>
     </RadioGroup>
 
+    <TextView android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:text="@string/log_entries_deleted_reminder"
+              android:layout_marginLeft="6dp"
+              android:layout_marginRight="6dp"
+              android:layout_marginTop="6dp"
+              android:layout_marginBottom="6dp"
+              android:gravity="center"/>
 
-    <LinearLayout android:layout_height="wrap_content" android:layout_gravity="center"
-                  android:layout_width="fill_parent">
-        <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/ok_btn"
-                android:text="@string/ok" android:layout_margin="4dp"
-                android:layout_weight="0.5"></Button>
-        <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/cancel_btn"
-                android:text="@string/cancel" android:layout_margin="4dp"
-                android:layout_weight="0.5"></Button>
+
+    <LinearLayout style="@style/button_bar">
+        <Button android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/ok_btn"
+                android:text="@string/ok"
+                android:layout_weight="1"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="3dp"/>
+
+        <Button android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/cancel_btn"
+                android:text="@string/cancel"
+                android:layout_weight="1"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="6dp"/>
+
     </LinearLayout>
 
 
