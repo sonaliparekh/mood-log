@@ -6,6 +6,10 @@
         <item name="android:buttonStyle">@style/Button</item>
     </style>
 
+    <style parent="@android:style/Theme.Dialog" name="MoodLogDialog">
+        <item name="android:buttonStyle">@style/Button</item>
+    </style>
+
     <style name="button_bar">
         <item name="android:paddingTop">@dimen/button_bar_padding_top</item>
         <item name="android:paddingBottom">@dimen/button_bar_padding_bottom</item>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="log_is_empty">Log is Empty</string>
-    <string name="mail_report_menu_title">Mail Report</string>
+    <string name="mail_report">Mail Report</string>
     <string name="ok">OK</string>
     <string name="all_time">All Time</string>
     <string name="last_four_weeks">Last Four Weeks</string>
@@ -33,4 +33,5 @@
     <string name="generating_email">Generating Email</string>
     <string name="empty_log_alert_title">Empty Log</string>
     <string name="empty_log_alert_message">You need to log some words before sending Email.</string>
+    <string name="log_entries_deleted_reminder">Log entries older than six weeks are automatically erased.</string>
 </resources>
