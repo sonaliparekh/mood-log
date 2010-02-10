@@ -36,6 +36,8 @@ public class ViewLogActivity extends ListActivity {
     Date mDate = new Date();
 
     private MoodLogData mMoodLogData;
+    private Cursor mLogCursor;
+
     private static final int WORD_COL_INDEX = 0;
     private static final int DATE_COL_INDEX = 1;
     private static final int TIME_COL_INDEX = 2;
@@ -45,7 +47,7 @@ public class ViewLogActivity extends ListActivity {
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
     private final SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm:ss a");
 
-    private static final int[] ROW_BACKGROUNDS = new int[] {
+    private static final int[] ROW_BACKGROUNDS = new int[]{
             R.color.log_even_row_background,
             R.color.log_odd_row_background
     };
@@ -55,11 +57,15 @@ public class ViewLogActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_log);
 
-        mMoodLogData = new MoodLogData(this);
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        getAllWords();
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
                 R.layout.log_list_item,
-                getAllWords(),
+                mLogCursor,
                 FROM_COLS,
                 TO) {
             @Override
@@ -70,23 +76,33 @@ public class ViewLogActivity extends ListActivity {
             }
         };
         adapter.setViewBinder(new LogBinder());
-
         setListAdapter(adapter);
     }
 
-    private Cursor getAllWords() {
+    @Override
+    protected void onStop() {
+        super.onStop();
 
+        if (mLogCursor != null) {
+            stopManagingCursor(mLogCursor);
+            mLogCursor.close();
+            mLogCursor = null;
+        }
+        if (mMoodLogData != null) {
+            mMoodLogData.close();
+            mMoodLogData = null;
+        }
+    }
+
+    private void getAllWords() {
         String sql = String.format("" +
                 "select %s, %s as entry_date, %s as entry_time, %s, %s from %s order by %s desc",
                 WORD_COL, ENTERED_ON_COL, ENTERED_ON_COL, WORD_SIZE_COL, _ID,
                 LOG_ENTRIES_TABLE, ENTERED_ON_COL);
 
-        SQLiteDatabase db = mMoodLogData.getReadableDatabase();
-        Cursor cursor = db.rawQuery(sql, null);
-//        Cursor cursor = db.query(LOG_ENTRIES_TABLE, FROM_COLS, null, null, null,
-//                null, ORDER_BY);
-        startManagingCursor(cursor);
-        return cursor;
+        SQLiteDatabase db = getMoodLogData().getReadableDatabase();
+        mLogCursor = db.rawQuery(sql, null);
+        startManagingCursor(mLogCursor);
     }
 
 
@@ -113,4 +129,12 @@ public class ViewLogActivity extends ListActivity {
             return false;
         }
     }
+
+    private MoodLogData getMoodLogData() {
+        if (mMoodLogData == null) {
+            mMoodLogData = new MoodLogData(this);
+        }
+        return mMoodLogData;
+    }
+
 }
