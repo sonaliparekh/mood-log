@@ -1,19 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
     
     <ListView android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
+              android:layout_height="wrap_content"
+              android:layout_weight="1.0"
               android:divider="#00000000"
               android:id="@android:id/list">
     </ListView>
 
     <TextView
             android:layout_height="fill_parent"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
+            android:layout_weight="1.0"
             android:id="@android:id/empty"
             android:text="@string/log_is_empty"
-            android:textSize="24dp"></TextView>
+            android:textSize="24dp"/>
+
+    <LinearLayout style="@style/button_bar">
+
+        <Button android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/back_btn"
+                android:text="@string/back"
+                android:paddingLeft="40dp"
+                android:paddingRight="40dp"/>
+    </LinearLayout>
+
 </LinearLayout>
