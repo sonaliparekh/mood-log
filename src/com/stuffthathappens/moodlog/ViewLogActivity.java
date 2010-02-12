@@ -36,8 +36,6 @@ public class ViewLogActivity extends ListActivity {
             R.id.log_item_time,
             R.id.log_item_word
     };
-    private static final String ORDER_BY = String.format(
-            "%s desc", ENTERED_ON_COL);
 
     Date mDate = new Date();
 
@@ -114,16 +112,12 @@ public class ViewLogActivity extends ListActivity {
                 R.id.log_item_word)).getText().toString();
 
         contextMenu.setHeaderTitle(mSelectedWord);
-        contextMenu.add(0, CONTEXT_MENU_EDIT_ITEM, 0, R.string.edit);
-        contextMenu.add(0, CONTEXT_MENU_DELETE_ITEM, 1, R.string.delete);
+        contextMenu.add(0, CONTEXT_MENU_DELETE_ITEM, 0, R.string.delete);
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case CONTEXT_MENU_EDIT_ITEM:
-                // TODO
-                return true;
             case CONTEXT_MENU_DELETE_ITEM:
                 // this approach ensures the dialog is managed by the activity, so
                 // it properly handles screen rotations and other lifecycle events
