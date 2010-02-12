@@ -8,32 +8,7 @@
     <TextView style="@style/title_heading"
               android:text="@string/mail_report"/>
 
-
-    <RadioGroup android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:id="@+id/date_range_radio_group">
-
-        <!--<include layout="@layout/mail_report_radios"/>-->
-
-        <RadioButton android:layout_width="wrap_content"
-                     android:layout_height="wrap_content"
-                     android:id="@+id/last_week_radio"
-                     android:text="@string/last_week"
-                     android:checked="true"/>
-        <RadioButton android:layout_width="wrap_content"
-                     android:layout_height="wrap_content"
-                     android:text="@string/last_two_weeks"
-                     android:id="@+id/last_two_weeks_radio"/>
-        <RadioButton android:layout_width="wrap_content"
-                     android:layout_height="wrap_content"
-                     android:text="@string/last_four_weeks"
-                     android:id="@+id/last_four_weeks_radio"/>
-        <RadioButton android:layout_width="wrap_content"
-                     android:layout_height="wrap_content"
-                     android:text="@string/all_time"
-                     android:id="@+id/all_time_radio"/>
-    </RadioGroup>
+    <include layout="@layout/mail_report_radios"/>
 
     <TextView android:layout_width="fill_parent"
               android:layout_height="wrap_content"

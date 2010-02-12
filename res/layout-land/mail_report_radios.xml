@@ -1,24 +1,35 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <RadioButton android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:id="@+id/last_week_radio"
-                 android:text="@string/last_week"
-                 android:checked="true"/>
-    
-    <RadioButton android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:text="@string/last_two_weeks"
-                 android:id="@+id/last_two_weeks_radio"/>
+    <TableLayout android:layout_width="fill_parent"
+                 android:layout_height="fill_parent"
+                 android:stretchColumns="*"
+                 android:layout_weight="1"
+                 android:id="@+id/date_range_radio_group">
 
-    <RadioButton android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:text="@string/last_four_weeks"
-                 android:id="@+id/last_four_weeks_radio"/>
+        <TableRow>
+            <RadioButton android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:id="@+id/last_week_radio"
+                         android:text="@string/last_week"
+                         android:checked="true"/>
 
-    <RadioButton android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:text="@string/all_time"
-                 android:id="@+id/all_time_radio"/>
+            <RadioButton android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:text="@string/last_four_weeks"
+                         android:id="@+id/last_four_weeks_radio"/>
+        </TableRow>
+
+        <TableRow>
+            <RadioButton android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:text="@string/last_two_weeks"
+                         android:id="@+id/last_two_weeks_radio"/>
+
+            <RadioButton android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:text="@string/all_time"
+                         android:id="@+id/all_time_radio"/>
+        </TableRow>
+    </TableLayout>
 
 </merge>

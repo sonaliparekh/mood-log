@@ -15,7 +15,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 public class MailReportActivity extends Activity implements OnClickListener {
 
@@ -31,6 +33,8 @@ public class MailReportActivity extends Activity implements OnClickListener {
     private ReportGenerator mReportGenerator;
 
     private static final String TAG = "DateRangeDialog";
+
+    private RadioButton[] radios;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +52,13 @@ public class MailReportActivity extends Activity implements OnClickListener {
         mAllTimeRadio = (RadioButton) findViewById(R.id.all_time_radio);
         mHandler = new Handler();
 
+        radios = new RadioButton[] { mLastWeekRadio, mLastTwoWeeksRadio,
+                mLastFourWeeksRadio, mAllTimeRadio };
+
+        for (RadioButton r : radios) {
+            r.setOnClickListener(this);
+        }
+
         mOkBtn.setOnClickListener(this);
         mCancelBtn.setOnClickListener(this);
     }
@@ -57,6 +68,12 @@ public class MailReportActivity extends Activity implements OnClickListener {
             sendMail();
         } else if (v == mCancelBtn) {
             finish();
+        } else if (v instanceof RadioButton) {
+            for (RadioButton r : radios) {
+                if (r != v) {
+                    r.setChecked(false);
+                }
+            }
         }
     }
 
