@@ -1,11 +1,17 @@
 package com.stuffthathappens.moodlog;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ListActivity;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
@@ -37,6 +43,8 @@ public class ViewLogActivity extends ListActivity {
 
     private MoodLogData mMoodLogData;
     private Cursor mLogCursor;
+    private long mSelectedId;
+    private String mSelectedWord;
 
     private static final int WORD_COL_INDEX = 0;
     private static final int DATE_COL_INDEX = 1;
@@ -57,12 +65,13 @@ public class ViewLogActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_log);
 
+        getListView().setOnCreateContextMenuListener(this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        getAllWords();
+        getAllEntries();
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
                 R.layout.log_list_item,
                 mLogCursor,
@@ -94,7 +103,37 @@ public class ViewLogActivity extends ListActivity {
         }
     }
 
-    private void getAllWords() {
+    @Override
+    public void onCreateContextMenu(ContextMenu contextMenu,
+                                    View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        AdapterView.AdapterContextMenuInfo info =
+                (AdapterView.AdapterContextMenuInfo) menuInfo;
+        mSelectedId = info.id;
+        mSelectedWord = ((TextView) info.targetView.findViewById(
+                R.id.log_item_word)).getText().toString();
+
+        contextMenu.setHeaderTitle(mSelectedWord);
+        contextMenu.add(0, CONTEXT_MENU_EDIT_ITEM, 0, R.string.edit);
+        contextMenu.add(0, CONTEXT_MENU_DELETE_ITEM, 1, R.string.delete);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case CONTEXT_MENU_EDIT_ITEM:
+                // TODO
+                return true;
+            case CONTEXT_MENU_DELETE_ITEM:
+                // this approach ensures the dialog is managed by the activity, so
+                // it properly handles screen rotations and other lifecycle events
+                showDialog(CONFIRM_DELETE_DIALOG);
+                return true;
+        }
+        return false;
+    }
+
+    private void getAllEntries() {
         String sql = String.format("" +
                 "select %s, %s as entry_date, %s as entry_time, %s, %s from %s order by %s desc",
                 WORD_COL, ENTERED_ON_COL, ENTERED_ON_COL, WORD_SIZE_COL, _ID,
@@ -105,6 +144,40 @@ public class ViewLogActivity extends ListActivity {
         startManagingCursor(mLogCursor);
     }
 
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        if (id == CONFIRM_DELETE_DIALOG) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(mSelectedWord)
+                    .setMessage(R.string.confirm_delete_entry_msg)
+                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            doDeleteLogEntry(mSelectedId);
+                            dialog.dismiss();
+                        }
+                    })
+                    .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+            return builder.create();
+        }
+        return super.onCreateDialog(id);
+    }
+
+    private void doDeleteLogEntry(long victim) {
+        SQLiteDatabase db = getMoodLogData().getWritableDatabase();
+
+        db.delete(LOG_ENTRIES_TABLE, _ID + " = " + victim, null);
+        refreshLog();
+    }
+
+    private void refreshLog() {
+        if (mLogCursor != null) {
+            mLogCursor.requery();
+        }
+    }
 
     private class LogBinder implements SimpleCursorAdapter.ViewBinder {
 

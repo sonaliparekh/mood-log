@@ -20,7 +20,8 @@
     <string name="delete">Delete</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="confirm_delete_msg">Are you sure you want to delete this word? All log entries for it will be deleted.</string>
+    <string name="confirm_delete_word_msg">Are you sure you want to delete this word? All log entries for it will be deleted.</string>
+    <string name="confirm_delete_entry_msg">Are you sure you want to delete this entry?</string>
 
     <string name="edit_words">Edit Words</string>
     <string name="log_it">Log It...</string>

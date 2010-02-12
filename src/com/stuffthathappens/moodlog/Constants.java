@@ -27,4 +27,7 @@ public interface Constants extends BaseColumns {
     String WORD_SIZE_COL = "word_size";
     String WORD_COL = "word";
     String ENTERED_ON_COL = "entered_on";
+    int CONTEXT_MENU_DELETE_ITEM = 1;
+    int CONTEXT_MENU_EDIT_ITEM = 2;
+    int CONFIRM_DELETE_DIALOG = 1;
 }
