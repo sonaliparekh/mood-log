@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -63,6 +64,11 @@ public class ViewLogActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_log);
 
+        findViewById(R.id.back_btn).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {               
+                finish();
+            }
+        });
         getListView().setOnCreateContextMenuListener(this);
     }
 
