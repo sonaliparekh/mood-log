@@ -23,8 +23,6 @@ public class HomeActivity extends ListActivity implements OnClickListener,
 
     private static final String TAG = "HomeActivity";
 
-    private static final int CONFIRM_DELETE_DIALOG = 1;
-
     private Button mLogBtn;
     private EditText mWordEntry;
 
@@ -41,8 +39,6 @@ public class HomeActivity extends ListActivity implements OnClickListener,
             "upper(%s)", WORD_COL);
     private static final int LOG_WORD_REQ_CD = 1;
 
-    private static final int CONTEXT_MENU_DELETE_ITEM = 1;
-    private static final int CONTEXT_MENU_EDIT_ITEM = 2;
     private String mSelectedWord = null;
 
     @Override
@@ -62,18 +58,19 @@ public class HomeActivity extends ListActivity implements OnClickListener,
 
         mLogBtn.setOnClickListener(this);
 
-        listView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
-            public void onCreateContextMenu(ContextMenu contextMenu,
-                                            View view,
-                                            ContextMenu.ContextMenuInfo menuInfo) {
-                AdapterView.AdapterContextMenuInfo info =
-                        (AdapterView.AdapterContextMenuInfo) menuInfo;
-                mSelectedWord = ((TextView) info.targetView).getText().toString();
-                contextMenu.setHeaderTitle(mSelectedWord);
-                contextMenu.add(0, CONTEXT_MENU_EDIT_ITEM, 0, R.string.edit);
-                contextMenu.add(0, CONTEXT_MENU_DELETE_ITEM, 1, R.string.delete);
-            }
-        });
+        listView.setOnCreateContextMenuListener(this);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu contextMenu,
+                                    View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        AdapterView.AdapterContextMenuInfo info =
+                (AdapterView.AdapterContextMenuInfo) menuInfo;
+        mSelectedWord = ((TextView) info.targetView).getText().toString();
+        contextMenu.setHeaderTitle(mSelectedWord);
+        contextMenu.add(0, CONTEXT_MENU_EDIT_ITEM, 0, R.string.edit);
+        contextMenu.add(0, CONTEXT_MENU_DELETE_ITEM, 1, R.string.delete);
     }
 
     @Override
@@ -153,7 +150,7 @@ public class HomeActivity extends ListActivity implements OnClickListener,
         if (id == CONFIRM_DELETE_DIALOG) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(mSelectedWord)
-                    .setMessage(R.string.confirm_delete_msg)
+                    .setMessage(R.string.confirm_delete_word_msg)
                     .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             doDeleteWord(mSelectedWord);
