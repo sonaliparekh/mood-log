@@ -9,7 +9,6 @@
                  android:debuggable="true"
                  android:theme="@style/MoodLog">
 
-        <!--android:theme="@style/MoodLog"-->
         <activity android:name=".HomeActivity"
                   android:label="@string/app_name"
                   android:windowSoftInputMode="adjustResize">
@@ -19,12 +18,12 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="LogWordActivity"></activity>
-
-        <activity android:name="HelpActivity"></activity>
-        <activity android:name="ViewLogActivity"></activity>
+        <activity android:name="EditWordActivity"
+                  android:windowSoftInputMode="adjustResize"/>
+        <activity android:name="HelpActivity"/>
+        <activity android:name="LogWordActivity"/>
         <activity android:name="MailReportActivity"/>
-                  <!--android:theme="@style/MoodLogDialog"></activity>-->
+        <activity android:name="ViewLogActivity"/>
     </application>
 
     <uses-sdk android:minSdkVersion="4"/>

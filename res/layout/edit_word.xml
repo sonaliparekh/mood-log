@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent">
+
+    <TextView
+            style="@style/title_heading"
+            android:text="@string/edit_word"/>
+
+    <!-- layout_gravity floats the View within its parent,
+         gravity aligns the text within the TextView -->
+
+    <TextView android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center"
+              android:gravity="center"
+              android:padding="10dp"
+              android:text="@string/edit_warning_msg"
+              android:textSize="16sp"/>
+
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:id="@+id/original_word"
+              android:layout_gravity="center"
+              android:gravity="center"
+              android:text="x"
+              android:textSize="26sp"
+              android:textStyle="bold"
+              android:layout_weight="1"/>
+
+    <EditText android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:gravity="top"
+              android:id="@+id/updated_word"
+              android:inputType="textCapWords"/>
+
+    <include layout="@layout/save_cancel_button_bar"/>
+
+
+</LinearLayout>

@@ -8,6 +8,11 @@ public interface Constants extends BaseColumns {
      * to save.
      */
     String EXTRA_WORD = "com.stuffthathappens.moodlog.word";
+
+    /**
+     * When editing a word, this indicates the intent holds the updated word.
+     */
+    String EXTRA_UPDATED_WORD = "com.stuffthathappens.moodlog.updated.word";
     
     /**
      * Intent extra data name, the value is the word size the user selected.
