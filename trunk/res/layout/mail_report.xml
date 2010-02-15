@@ -19,25 +19,5 @@
               android:layout_marginBottom="6dp"
               android:gravity="center"/>
 
-
-    <LinearLayout style="@style/button_bar">
-        <Button android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/ok_btn"
-                android:text="@string/ok"
-                android:layout_weight="1"
-                android:layout_marginLeft="6dp"
-                android:layout_marginRight="3dp"/>
-
-        <Button android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/cancel_btn"
-                android:text="@string/cancel"
-                android:layout_weight="1"
-                android:layout_marginLeft="3dp"
-                android:layout_marginRight="6dp"/>
-
-    </LinearLayout>
-
-
+    <include layout="@layout/save_cancel_button_bar"/>
 </LinearLayout>

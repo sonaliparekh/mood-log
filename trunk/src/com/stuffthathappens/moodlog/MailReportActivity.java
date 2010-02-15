@@ -15,13 +15,11 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 
 public class MailReportActivity extends Activity implements OnClickListener {
 
-    private Button mOkBtn;
+    private Button mSendBtn;
     private Button mCancelBtn;
     private RadioButton mLastWeekRadio;
     private RadioButton mLastTwoWeeksRadio;
@@ -44,7 +42,9 @@ public class MailReportActivity extends Activity implements OnClickListener {
 
         setContentView(R.layout.mail_report);
 
-        mOkBtn = (Button) findViewById(R.id.ok_btn);
+        // reusing the save_btn from the save_cancel_button_bar
+        mSendBtn = (Button) findViewById(R.id.save_btn);
+        mSendBtn.setText(R.string.send);
         mCancelBtn = (Button) findViewById(R.id.cancel_btn);
         mLastWeekRadio = (RadioButton) findViewById(R.id.last_week_radio);
         mLastTwoWeeksRadio = (RadioButton) findViewById(R.id.last_two_weeks_radio);
@@ -59,12 +59,12 @@ public class MailReportActivity extends Activity implements OnClickListener {
             r.setOnClickListener(this);
         }
 
-        mOkBtn.setOnClickListener(this);
+        mSendBtn.setOnClickListener(this);
         mCancelBtn.setOnClickListener(this);
     }
 
     public void onClick(View v) {
-        if (v == mOkBtn) {
+        if (v == mSendBtn) {
             sendMail();
         } else if (v == mCancelBtn) {
             finish();

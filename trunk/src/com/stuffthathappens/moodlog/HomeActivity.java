@@ -14,6 +14,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.*;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 
 import static com.stuffthathappens.moodlog.Constants.*;
@@ -37,7 +38,9 @@ public class HomeActivity extends ListActivity implements OnClickListener,
 
     private static final String ORDER_BY = String.format(
             "upper(%s)", WORD_COL);
+
     private static final int LOG_WORD_REQ_CD = 1;
+    private static final int EDIT_WORD_REQ_CD = 2;
 
     private String mSelectedWord = null;
 
@@ -132,9 +135,13 @@ public class HomeActivity extends ListActivity implements OnClickListener,
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
+        hideSoftKeyboard();
+
         switch (item.getItemId()) {
             case CONTEXT_MENU_EDIT_ITEM:
-                // TODO
+                Intent i = new Intent(this, EditWordActivity.class);
+                i.putExtra(EXTRA_WORD, mSelectedWord);
+                startActivityForResult(i, EDIT_WORD_REQ_CD);
                 return true;
             case CONTEXT_MENU_DELETE_ITEM:
                 // this approach ensures the dialog is managed by the activity, so
@@ -197,12 +204,15 @@ public class HomeActivity extends ListActivity implements OnClickListener,
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.help_menu_item:
+                hideSoftKeyboard();
                 startActivity(new Intent(this, HelpActivity.class));
                 return true;
             case R.id.view_log_menu_item:
+                hideSoftKeyboard();
                 startActivity(new Intent(this, ViewLogActivity.class));
                 return true;
             case R.id.mail_report_menu_item:
+                hideSoftKeyboard();
                 startActivity(new Intent(this, MailReportActivity.class));
                 return true;
         }
@@ -214,6 +224,7 @@ public class HomeActivity extends ListActivity implements OnClickListener,
             String word = getWord();
 
             if (word != null) {
+                hideSoftKeyboard();
                 Intent intent = new Intent(this, LogWordActivity.class);
                 intent.putExtra(EXTRA_WORD, word);
                 startActivityForResult(intent, LOG_WORD_REQ_CD);
@@ -229,16 +240,34 @@ public class HomeActivity extends ListActivity implements OnClickListener,
         // note: onActivityResult will be called before this activity is started and
         //       resumed. That's why the mMoodLogData is always accessed via the
         //       getMoodLogData() method
-        if (requestCode == LOG_WORD_REQ_CD && resultCode == RESULT_OK) {
-            String word = data.getStringExtra(EXTRA_WORD);
-            int wordSize = data.getIntExtra(EXTRA_WORD_SIZE,
-                    INITIAL_WORD_SIZE);
-            mWordEntry.setText(null);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == LOG_WORD_REQ_CD) {
+                String word = data.getStringExtra(EXTRA_WORD);
+                int wordSize = data.getIntExtra(EXTRA_WORD_SIZE,
+                        INITIAL_WORD_SIZE);
+                mWordEntry.setText(null);
 
-            insertLogEntry(word, wordSize);
-            Toast.makeText(this, "Logged " + word, Toast.LENGTH_SHORT).show();
+                insertLogEntry(word, wordSize);
+                Toast.makeText(this, "Logged " + word, Toast.LENGTH_SHORT).show();
+            } else if (requestCode == EDIT_WORD_REQ_CD) {
+                String origWord = data.getStringExtra(EXTRA_WORD);
+                String updatedWord = data.getStringExtra(EXTRA_UPDATED_WORD);
+
+                updateWord(origWord, updatedWord);
+                mWordEntry.setText(null);
+                Toast.makeText(this, "Edited " + updatedWord, Toast.LENGTH_SHORT).show();
+            }
             updateEnabledStates();
         }
+    }
+
+    private void updateWord(String origWord, String updatedWord) {
+        SQLiteDatabase db = getMoodLogData().getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(WORD_COL, updatedWord);
+        db.update(LOG_ENTRIES_TABLE, values, WORD_COL + " = ?",
+                new String[]{origWord});
+        refreshWordList();
     }
 
     private void insertLogEntry(String word, int wordSize) {
@@ -344,5 +373,11 @@ public class HomeActivity extends ListActivity implements OnClickListener,
         if (c != null) {
             c.close();
         }
+    }
+
+    private void hideSoftKeyboard() {
+        InputMethodManager mgr = (InputMethodManager)
+                getSystemService(INPUT_METHOD_SERVICE);
+        mgr.hideSoftInputFromWindow(mWordEntry.getWindowToken(), 0);
     }
 }
