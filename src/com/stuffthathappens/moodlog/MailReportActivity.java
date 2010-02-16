@@ -19,16 +19,16 @@ import android.widget.RadioButton;
 
 public class MailReportActivity extends Activity implements OnClickListener {
 
-    private Button mSendBtn;
-    private Button mCancelBtn;
-    private RadioButton mLastWeekRadio;
-    private RadioButton mLastTwoWeeksRadio;
-    private RadioButton mLastFourWeeksRadio;
-    private RadioButton mAllTimeRadio;
+    private Button sendBtn;
+    private Button cancelBtn;
+    private RadioButton lastWeekRadio;
+    private RadioButton lastTwoWeeksRadio;
+    private RadioButton lastFourWeeksRadio;
+    private RadioButton allTimeRadio;
 
-    private ProgressDialog mProgressDialog;
-    private Handler mHandler;
-    private ReportGenerator mReportGenerator;
+    private ProgressDialog progressDialog;
+    private Handler handler;
+    private ReportGenerator reportGenerator;
 
     private static final String TAG = "DateRangeDialog";
 
@@ -38,35 +38,35 @@ public class MailReportActivity extends Activity implements OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mReportGenerator = new ReportGenerator();
+        reportGenerator = new ReportGenerator();
 
         setContentView(R.layout.mail_report);
 
         // reusing the save_btn from the save_cancel_button_bar
-        mSendBtn = (Button) findViewById(R.id.save_btn);
-        mSendBtn.setText(R.string.send);
-        mCancelBtn = (Button) findViewById(R.id.cancel_btn);
-        mLastWeekRadio = (RadioButton) findViewById(R.id.last_week_radio);
-        mLastTwoWeeksRadio = (RadioButton) findViewById(R.id.last_two_weeks_radio);
-        mLastFourWeeksRadio = (RadioButton) findViewById(R.id.last_four_weeks_radio);
-        mAllTimeRadio = (RadioButton) findViewById(R.id.all_time_radio);
-        mHandler = new Handler();
+        sendBtn = (Button) findViewById(R.id.save_btn);
+        sendBtn.setText(R.string.send);
+        cancelBtn = (Button) findViewById(R.id.cancel_btn);
+        lastWeekRadio = (RadioButton) findViewById(R.id.last_week_radio);
+        lastTwoWeeksRadio = (RadioButton) findViewById(R.id.last_two_weeks_radio);
+        lastFourWeeksRadio = (RadioButton) findViewById(R.id.last_four_weeks_radio);
+        allTimeRadio = (RadioButton) findViewById(R.id.all_time_radio);
+        handler = new Handler();
 
-        radios = new RadioButton[] { mLastWeekRadio, mLastTwoWeeksRadio,
-                mLastFourWeeksRadio, mAllTimeRadio };
+        radios = new RadioButton[] {lastWeekRadio, lastTwoWeeksRadio,
+                lastFourWeeksRadio, allTimeRadio};
 
         for (RadioButton r : radios) {
             r.setOnClickListener(this);
         }
 
-        mSendBtn.setOnClickListener(this);
-        mCancelBtn.setOnClickListener(this);
+        sendBtn.setOnClickListener(this);
+        cancelBtn.setOnClickListener(this);
     }
 
     public void onClick(View v) {
-        if (v == mSendBtn) {
+        if (v == sendBtn) {
             sendMail();
-        } else if (v == mCancelBtn) {
+        } else if (v == cancelBtn) {
             finish();
         } else if (v instanceof RadioButton) {
             for (RadioButton r : radios) {
@@ -79,20 +79,20 @@ public class MailReportActivity extends Activity implements OnClickListener {
 
     private void sendMail() {
         int numDays = -1;
-        if (mLastWeekRadio.isChecked()) {
+        if (lastWeekRadio.isChecked()) {
             numDays = 7;
-        } else if (mLastTwoWeeksRadio.isChecked()) {
+        } else if (lastTwoWeeksRadio.isChecked()) {
             numDays = 14;
-        } else if (mLastFourWeeksRadio.isChecked()) {
+        } else if (lastFourWeeksRadio.isChecked()) {
             numDays = 28;
-        } else if (mAllTimeRadio.isChecked()) {
+        } else if (allTimeRadio.isChecked()) {
             numDays = -1;
         }
 
-        mProgressDialog = new ProgressDialog(this);
-        mProgressDialog.setIndeterminate(true);
-        mProgressDialog.setMessage(getText(R.string.generating_email));
-        mProgressDialog.show();
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage(getText(R.string.generating_email));
+        progressDialog.show();
 
         new Thread(new MailSender(this, numDays)).start();
     }
@@ -109,9 +109,9 @@ public class MailReportActivity extends Activity implements OnClickListener {
     }
 
     private void doDismiss() {
-        if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
-            mProgressDialog = null;
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+            progressDialog = null;
         }
         finish();
     }
@@ -127,9 +127,9 @@ public class MailReportActivity extends Activity implements OnClickListener {
 
         public void run() {
             try {
-                final File htmlEmail = mReportGenerator.generateHtmlEmail(context,
+                final File htmlEmail = reportGenerator.generateHtmlEmail(context,
                         numDays);
-                mHandler.post(new Runnable() {
+                handler.post(new Runnable() {
                     public void run() {
                         doDismiss();
                         launchMailer(htmlEmail);
@@ -138,7 +138,7 @@ public class MailReportActivity extends Activity implements OnClickListener {
             } catch (StorageException e) {
                 Log.e(TAG, "Failed to generate Email", e);
 
-                mHandler.post(new Runnable() {
+                handler.post(new Runnable() {
                     public void run() {
                         doDismiss();
 

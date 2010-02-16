@@ -37,12 +37,12 @@ public class ViewLogActivity extends ListActivity {
             R.id.log_item_word
     };
 
-    Date mDate = new Date();
+    Date date = new Date();
 
-    private MoodLogData mMoodLogData;
-    private Cursor mLogCursor;
-    private long mSelectedId;
-    private String mSelectedWord;
+    private MoodLogData data;
+    private Cursor logCursor;
+    private long selectedId;
+    private String selectedWord;
 
     private static final int WORD_COL_INDEX = 0;
     private static final int DATE_COL_INDEX = 1;
@@ -77,7 +77,7 @@ public class ViewLogActivity extends ListActivity {
         getAllEntries();
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
                 R.layout.log_list_item,
-                mLogCursor,
+                logCursor,
                 FROM_COLS,
                 TO) {
             @Override
@@ -95,14 +95,14 @@ public class ViewLogActivity extends ListActivity {
     protected void onStop() {
         super.onStop();
 
-        if (mLogCursor != null) {
-            stopManagingCursor(mLogCursor);
-            mLogCursor.close();
-            mLogCursor = null;
+        if (logCursor != null) {
+            stopManagingCursor(logCursor);
+            logCursor.close();
+            logCursor = null;
         }
-        if (mMoodLogData != null) {
-            mMoodLogData.close();
-            mMoodLogData = null;
+        if (data != null) {
+            data.close();
+            data = null;
         }
     }
 
@@ -112,11 +112,11 @@ public class ViewLogActivity extends ListActivity {
                                     ContextMenu.ContextMenuInfo menuInfo) {
         AdapterView.AdapterContextMenuInfo info =
                 (AdapterView.AdapterContextMenuInfo) menuInfo;
-        mSelectedId = info.id;
-        mSelectedWord = ((TextView) info.targetView.findViewById(
+        selectedId = info.id;
+        selectedWord = ((TextView) info.targetView.findViewById(
                 R.id.log_item_word)).getText().toString();
 
-        contextMenu.setHeaderTitle(mSelectedWord);
+        contextMenu.setHeaderTitle(selectedWord);
         contextMenu.add(0, CONTEXT_MENU_DELETE_ITEM, 0, R.string.delete);
     }
 
@@ -139,19 +139,19 @@ public class ViewLogActivity extends ListActivity {
                 LOG_ENTRIES_TABLE, ENTERED_ON_COL);
 
         SQLiteDatabase db = getMoodLogData().getReadableDatabase();
-        mLogCursor = db.rawQuery(sql, null);
-        startManagingCursor(mLogCursor);
+        logCursor = db.rawQuery(sql, null);
+        startManagingCursor(logCursor);
     }
 
     @Override
     protected Dialog onCreateDialog(int id) {
         if (id == CONFIRM_DELETE_DIALOG) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(mSelectedWord)
+            builder.setTitle(selectedWord)
                     .setMessage(R.string.confirm_delete_entry_msg)
                     .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            doDeleteLogEntry(mSelectedId);
+                            doDeleteLogEntry(selectedId);
                             dialog.dismiss();
                         }
                     })
@@ -173,8 +173,8 @@ public class ViewLogActivity extends ListActivity {
     }
 
     private void refreshLog() {
-        if (mLogCursor != null) {
-            mLogCursor.requery();
+        if (logCursor != null) {
+            logCursor.requery();
         }
     }
 
@@ -186,12 +186,12 @@ public class ViewLogActivity extends ListActivity {
                     ((TextView) view).setText(cursor.getString(column));
                     return true;
                 case DATE_COL_INDEX:
-                    mDate.setTime(cursor.getLong(column));
-                    ((TextView) view).setText(dateFormat.format(mDate));
+                    date.setTime(cursor.getLong(column));
+                    ((TextView) view).setText(dateFormat.format(date));
                     return true;
                 case TIME_COL_INDEX:
-                    mDate.setTime(cursor.getLong(column));
-                    ((TextView) view).setText(timeFormat.format(mDate));
+                    date.setTime(cursor.getLong(column));
+                    ((TextView) view).setText(timeFormat.format(date));
                     return true;
                 case WORD_SIZE_COL_INDEX:
                     int wordSize = cursor.getInt(column);
@@ -203,10 +203,10 @@ public class ViewLogActivity extends ListActivity {
     }
 
     private MoodLogData getMoodLogData() {
-        if (mMoodLogData == null) {
-            mMoodLogData = new MoodLogData(this);
+        if (data == null) {
+            data = new MoodLogData(this);
         }
-        return mMoodLogData;
+        return data;
     }
 
 }
