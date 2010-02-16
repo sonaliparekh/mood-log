@@ -24,11 +24,11 @@ public class HomeActivity extends ListActivity implements OnClickListener,
 
     private static final String TAG = "HomeActivity";
 
-    private Button mLogBtn;
-    private EditText mWordEntry;
+    private Button logBtn;
+    private EditText wordEntryText;
 
-    private MoodLogData mMoodLogData;
-    private Cursor mWordsCursor;
+    private MoodLogData data;
+    private Cursor wordsCursor;
 
     private static final String[] FROM_COLS = {
             WORD_COL, _ID
@@ -42,7 +42,7 @@ public class HomeActivity extends ListActivity implements OnClickListener,
     private static final int LOG_WORD_REQ_CD = 1;
     private static final int EDIT_WORD_REQ_CD = 2;
 
-    private String mSelectedWord = null;
+    private String selectedWord = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,15 +51,15 @@ public class HomeActivity extends ListActivity implements OnClickListener,
 
         setContentView(R.layout.home);
 
-        mLogBtn = (Button) findViewById(R.id.log_btn);
-        mWordEntry = (EditText) findViewById(R.id.word_entry);
+        logBtn = (Button) findViewById(R.id.log_btn);
+        wordEntryText = (EditText) findViewById(R.id.word_entry);
 
         final ListView listView = getListView();
         listView.setTextFilterEnabled(true);
 
-        mWordEntry.addTextChangedListener(this);
+        wordEntryText.addTextChangedListener(this);
 
-        mLogBtn.setOnClickListener(this);
+        logBtn.setOnClickListener(this);
 
         listView.setOnCreateContextMenuListener(this);
     }
@@ -70,8 +70,8 @@ public class HomeActivity extends ListActivity implements OnClickListener,
                                     ContextMenu.ContextMenuInfo menuInfo) {
         AdapterView.AdapterContextMenuInfo info =
                 (AdapterView.AdapterContextMenuInfo) menuInfo;
-        mSelectedWord = ((TextView) info.targetView).getText().toString();
-        contextMenu.setHeaderTitle(mSelectedWord);
+        selectedWord = ((TextView) info.targetView).getText().toString();
+        contextMenu.setHeaderTitle(selectedWord);
         contextMenu.add(0, CONTEXT_MENU_EDIT_ITEM, 0, R.string.edit);
         contextMenu.add(0, CONTEXT_MENU_DELETE_ITEM, 1, R.string.delete);
     }
@@ -81,15 +81,15 @@ public class HomeActivity extends ListActivity implements OnClickListener,
         super.onStart();
         Log.v(TAG, "onStart()");
 
-        mWordsCursor = getMoodLogData().getReadableDatabase().query(true,
+        wordsCursor = getMoodLogData().getReadableDatabase().query(true,
                 Constants.LOG_ENTRIES_TABLE, FROM_COLS, null,
                 null, WORD_COL, null, ORDER_BY, null);
 
         // onPause will call deactivate(), onResume will call refreshWordList()
-        startManagingCursor(mWordsCursor);
+        startManagingCursor(wordsCursor);
         SimpleCursorAdapter wordListAdapter = new SimpleCursorAdapter(this,
                 R.layout.word_list_item,
-                mWordsCursor,
+                wordsCursor,
                 FROM_COLS,
                 TO);
         setListAdapter(wordListAdapter);
@@ -122,14 +122,14 @@ public class HomeActivity extends ListActivity implements OnClickListener,
         super.onStop();
         Log.v(TAG, "onStop()");
 
-        if (mWordsCursor != null) {
-            stopManagingCursor(mWordsCursor);
-            mWordsCursor.close();
-            mWordsCursor = null;
+        if (wordsCursor != null) {
+            stopManagingCursor(wordsCursor);
+            wordsCursor.close();
+            wordsCursor = null;
         }
-        if (mMoodLogData != null) {
-            mMoodLogData.close();
-            mMoodLogData = null;
+        if (data != null) {
+            data.close();
+            data = null;
         }
     }
 
@@ -140,7 +140,7 @@ public class HomeActivity extends ListActivity implements OnClickListener,
         switch (item.getItemId()) {
             case CONTEXT_MENU_EDIT_ITEM:
                 Intent i = new Intent(this, EditWordActivity.class);
-                i.putExtra(EXTRA_WORD, mSelectedWord);
+                i.putExtra(EXTRA_WORD, selectedWord);
                 startActivityForResult(i, EDIT_WORD_REQ_CD);
                 return true;
             case CONTEXT_MENU_DELETE_ITEM:
@@ -156,11 +156,11 @@ public class HomeActivity extends ListActivity implements OnClickListener,
     protected Dialog onCreateDialog(int id) {
         if (id == CONFIRM_DELETE_DIALOG) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(mSelectedWord)
+            builder.setTitle(selectedWord)
                     .setMessage(R.string.confirm_delete_word_msg)
                     .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            doDeleteWord(mSelectedWord);
+                            doDeleteWord(selectedWord);
                             dialog.dismiss();
                         }
                     })
@@ -187,9 +187,9 @@ public class HomeActivity extends ListActivity implements OnClickListener,
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
-        if (mWordsCursor != null) {
-            mWordsCursor.moveToPosition(position);
-            mWordEntry.setText(mWordsCursor.getString(WORD_COL_INDEX));
+        if (wordsCursor != null) {
+            wordsCursor.moveToPosition(position);
+            wordEntryText.setText(wordsCursor.getString(WORD_COL_INDEX));
         }
     }
 
@@ -220,7 +220,7 @@ public class HomeActivity extends ListActivity implements OnClickListener,
     }
 
     public void onClick(View src) {
-        if (src == mLogBtn) {
+        if (src == logBtn) {
             String word = getWord();
 
             if (word != null) {
@@ -238,14 +238,14 @@ public class HomeActivity extends ListActivity implements OnClickListener,
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // note: onActivityResult will be called before this activity is started and
-        //       resumed. That's why the mMoodLogData is always accessed via the
+        //       resumed. That's why the data is always accessed via the
         //       getMoodLogData() method
         if (resultCode == RESULT_OK) {
             if (requestCode == LOG_WORD_REQ_CD) {
                 String word = data.getStringExtra(EXTRA_WORD);
                 int wordSize = data.getIntExtra(EXTRA_INTENSITY,
                         INITIAL_INTENSITY);
-                mWordEntry.setText(null);
+                wordEntryText.setText(null);
 
                 insertLogEntry(word, wordSize);
                 Toast.makeText(this, "Logged " + word, Toast.LENGTH_SHORT).show();
@@ -254,7 +254,7 @@ public class HomeActivity extends ListActivity implements OnClickListener,
                 String updatedWord = data.getStringExtra(EXTRA_UPDATED_WORD);
 
                 updateWord(origWord, updatedWord);
-                mWordEntry.setText(null);
+                wordEntryText.setText(null);
                 Toast.makeText(this, "Edited " + updatedWord, Toast.LENGTH_SHORT).show();
             }
             updateEnabledStates();
@@ -283,10 +283,10 @@ public class HomeActivity extends ListActivity implements OnClickListener,
     // lazy loads the MoodLogData object
 
     private MoodLogData getMoodLogData() {
-        if (mMoodLogData == null) {
-            mMoodLogData = new MoodLogData(this);
+        if (data == null) {
+            data = new MoodLogData(this);
         }
-        return mMoodLogData;
+        return data;
     }
 
     private void doDeleteWord(String victim) {
@@ -299,13 +299,13 @@ public class HomeActivity extends ListActivity implements OnClickListener,
         // the cursor will be null if the activity is stopped. If that's the case,
         // there is no reason to refreshWordList() because that will happen when the activity
         // starts again
-        if (mWordsCursor != null) {
-            mWordsCursor.requery();
+        if (wordsCursor != null) {
+            wordsCursor.requery();
         }
     }
 
     private String getWord() {
-        String word = Utils.trimToNull(mWordEntry.getText().toString());
+        String word = Utils.trimToNull(wordEntryText.getText().toString());
         if (word != null) {
             word = findSimilarWord(word);
         }
@@ -313,7 +313,7 @@ public class HomeActivity extends ListActivity implements OnClickListener,
     }
 
     private void updateEnabledStates() {
-        mLogBtn.setEnabled(getWord() != null);
+        logBtn.setEnabled(getWord() != null);
     }
 
     /**
@@ -345,7 +345,7 @@ public class HomeActivity extends ListActivity implements OnClickListener,
     }
 
     private boolean isLogEmpty() {
-        SQLiteDatabase db = mMoodLogData.getReadableDatabase();
+        SQLiteDatabase db = data.getReadableDatabase();
         Cursor cursor = null;
         try {
             cursor = db.rawQuery(String.format(
@@ -378,6 +378,6 @@ public class HomeActivity extends ListActivity implements OnClickListener,
     private void hideSoftKeyboard() {
         InputMethodManager mgr = (InputMethodManager)
                 getSystemService(INPUT_METHOD_SERVICE);
-        mgr.hideSoftInputFromWindow(mWordEntry.getWindowToken(), 0);
+        mgr.hideSoftInputFromWindow(wordEntryText.getWindowToken(), 0);
     }
 }

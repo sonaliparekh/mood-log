@@ -18,11 +18,10 @@ import static com.stuffthathappens.moodlog.Constants.EXTRA_WORD;
  * @author Eric Burke
  */
 public class EditWordActivity extends Activity {
-    private Button mSaveBtn;
-    private Button mCancelBtn;
+    private Button saveBtn;
 
-    private String mOrigWord;
-    private EditText mUpdatedWord;
+    private String origWord;
+    private EditText updatedWord;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,15 +29,15 @@ public class EditWordActivity extends Activity {
 
         setContentView(R.layout.edit_word);
 
-        mSaveBtn = (Button) findViewById(R.id.save_btn);
-        mCancelBtn = (Button) findViewById(R.id.cancel_btn);
+        saveBtn = (Button) findViewById(R.id.save_btn);
+        Button cancelBtn = (Button) findViewById(R.id.cancel_btn);
 
-        mSaveBtn.setOnClickListener(new View.OnClickListener() {
+        saveBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 saveClicked();
             }
         });
-        mCancelBtn.setOnClickListener(new View.OnClickListener() {
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 hideSoftKeyboard();
                 setResult(RESULT_CANCELED);
@@ -47,13 +46,13 @@ public class EditWordActivity extends Activity {
         });
 
         Intent intent = getIntent();
-        mOrigWord = intent.getExtras().getString(EXTRA_WORD);
+        origWord = intent.getExtras().getString(EXTRA_WORD);
 
-        ((TextView) findViewById(R.id.original_word)).setText(mOrigWord);
-        mUpdatedWord = (EditText) findViewById(R.id.updated_word);
-        mUpdatedWord.setText(mOrigWord);
+        ((TextView) findViewById(R.id.original_word)).setText(origWord);
+        updatedWord = (EditText) findViewById(R.id.updated_word);
+        updatedWord.setText(origWord);
 
-        mUpdatedWord.addTextChangedListener(new TextWatcher() {
+        updatedWord.addTextChangedListener(new TextWatcher() {
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
 
@@ -75,10 +74,8 @@ public class EditWordActivity extends Activity {
     private void saveClicked() {
         hideSoftKeyboard();
 
-        // TODO verify the word is not a duplicate
-
         Intent i = new Intent();
-        i.putExtra(EXTRA_WORD, mOrigWord);
+        i.putExtra(EXTRA_WORD, origWord);
         i.putExtra(EXTRA_UPDATED_WORD, getUpdatedWord());
         setResult(RESULT_OK, i);
         finish();
@@ -88,18 +85,18 @@ public class EditWordActivity extends Activity {
      * @return the proposed word, with whitespace trimmed out.
      */
     private String getUpdatedWord() {
-        return mUpdatedWord.getText().toString().trim();
+        return updatedWord.getText().toString().trim();
     }
 
     private void updateEnabledStates() {
         String updated = getUpdatedWord();
-        mSaveBtn.setEnabled(updated.length() > 0 &&
-                !updated.equals(mOrigWord));
+        saveBtn.setEnabled(updated.length() > 0 &&
+                !updated.equals(origWord));
     }
 
     private void hideSoftKeyboard() {
         InputMethodManager mgr = (InputMethodManager)
                 getSystemService(INPUT_METHOD_SERVICE);
-        mgr.hideSoftInputFromWindow(mUpdatedWord.getWindowToken(), 0);
+        mgr.hideSoftInputFromWindow(updatedWord.getWindowToken(), 0);
     }
 }
