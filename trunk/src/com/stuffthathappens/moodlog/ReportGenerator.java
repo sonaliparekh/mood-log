@@ -35,7 +35,7 @@ public class ReportGenerator {
         try {
             db = data.getReadableDatabase();
             cursor = db.query(LOG_ENTRIES_TABLE,
-                    new String[] { WORD_COL, WORD_SIZE_COL, ENTERED_ON_COL },
+                    new String[] { WORD_COL, INTENSITY_COL, ENTERED_ON_COL },
                     ENTERED_ON_COL + " > ?",
                     new String[] { Long.toString(cal.getTimeInMillis()) },
                     null,
