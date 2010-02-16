@@ -26,7 +26,7 @@ public class MoodLogData extends SQLiteOpenHelper {
                 "create table " + LOG_ENTRIES_TABLE + " (" +
                 _ID + " integer primary key autoincrement, " +
                 ENTERED_ON_COL + " integer not null, " +
-                WORD_SIZE_COL + " integer not null, " +
+                INTENSITY_COL + " integer not null, " +
                 WORD_COL + " text not null); ");
     }
 

@@ -243,8 +243,8 @@ public class HomeActivity extends ListActivity implements OnClickListener,
         if (resultCode == RESULT_OK) {
             if (requestCode == LOG_WORD_REQ_CD) {
                 String word = data.getStringExtra(EXTRA_WORD);
-                int wordSize = data.getIntExtra(EXTRA_WORD_SIZE,
-                        INITIAL_WORD_SIZE);
+                int wordSize = data.getIntExtra(EXTRA_INTENSITY,
+                        INITIAL_INTENSITY);
                 mWordEntry.setText(null);
 
                 insertLogEntry(word, wordSize);
@@ -275,7 +275,7 @@ public class HomeActivity extends ListActivity implements OnClickListener,
         ContentValues values = new ContentValues();
         values.put(ENTERED_ON_COL, System.currentTimeMillis());
         values.put(WORD_COL, word);
-        values.put(WORD_SIZE_COL, wordSize);
+        values.put(INTENSITY_COL, wordSize);
         db.insertOrThrow(LOG_ENTRIES_TABLE, null, values);
         refreshWordList();
     }

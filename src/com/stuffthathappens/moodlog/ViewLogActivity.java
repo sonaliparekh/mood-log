@@ -27,7 +27,7 @@ public class ViewLogActivity extends ListActivity {
             WORD_COL,
             "entry_date",
             "entry_time",
-            WORD_SIZE_COL,
+            INTENSITY_COL,
             _ID
     };
     private static final int[] TO = {
@@ -135,7 +135,7 @@ public class ViewLogActivity extends ListActivity {
     private void getAllEntries() {
         String sql = String.format("" +
                 "select %s, %s as entry_date, %s as entry_time, %s, %s from %s order by %s desc",
-                WORD_COL, ENTERED_ON_COL, ENTERED_ON_COL, WORD_SIZE_COL, _ID,
+                WORD_COL, ENTERED_ON_COL, ENTERED_ON_COL, INTENSITY_COL, _ID,
                 LOG_ENTRIES_TABLE, ENTERED_ON_COL);
 
         SQLiteDatabase db = getMoodLogData().getReadableDatabase();

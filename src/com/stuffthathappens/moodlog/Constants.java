@@ -15,21 +15,21 @@ public interface Constants extends BaseColumns {
     String EXTRA_UPDATED_WORD = "com.stuffthathappens.moodlog.updated.word";
     
     /**
-     * Intent extra data name, the value is the word size the user selected.
+     * Intent extra data name, the value is the word intensity the user selected.
      */
-    String EXTRA_WORD_SIZE = "com.stuffthathappens.moodlog.word_size";
+    String EXTRA_INTENSITY = "com.stuffthathappens.moodlog.intensity";
     
-    int INITIAL_WORD_SIZE = 2;
+    int INITIAL_INTENSITY = 2;
     
     /**
      * Word sizes range from 0 to this number, inclusive.
      */
-    int MAX_WORD_SIZE = 4;
+    int MAX_INTENSITY = 4;
     
     int DATE_RANGE_DIALOG = 1000;
 
     String LOG_ENTRIES_TABLE = "log_entries";
-    String WORD_SIZE_COL = "word_size";
+    String INTENSITY_COL = "word_size";
     String WORD_COL = "word";
     String ENTERED_ON_COL = "entered_on";
     int CONTEXT_MENU_DELETE_ITEM = 1;
