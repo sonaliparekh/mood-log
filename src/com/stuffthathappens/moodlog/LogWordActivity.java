@@ -45,7 +45,7 @@ public class LogWordActivity extends Activity implements OnClickListener,
 
         Intent intent = getIntent();
         wordLabel.setText(intent.getExtras().getString(Constants.EXTRA_WORD));
-        updateWordSize(Constants.INITIAL_INTENSITY);
+        updateIntensity(Constants.INITIAL_INTENSITY);
 
         wordLabel.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -89,7 +89,7 @@ public class LogWordActivity extends Activity implements OnClickListener,
     }
 
     public void onProgressChanged(SeekBar sb, int progress, boolean fromUser) {
-        updateWordSize(progress);
+        updateIntensity(progress);
     }
 
     public void onStartTrackingTouch(SeekBar sb) {
@@ -98,10 +98,10 @@ public class LogWordActivity extends Activity implements OnClickListener,
     public void onStopTrackingTouch(SeekBar sb) {
     }
 
-    private void updateWordSize(int size) {
-        int wordSizeRange = Constants.MAX_INTENSITY;
+    private void updateIntensity(int intensity) {
+        int intensityRange = Constants.MAX_INTENSITY;
         float fontSizeRange = MAX_FONT_SIZE - MIN_FONT_SIZE;
-        float ratio = (size + 1f) / wordSizeRange;
+        float ratio = (intensity + 1f) / intensityRange;
         float desiredFontSize = ratio * fontSizeRange + MIN_FONT_SIZE;
 
         wordLabel.setTextSize(desiredFontSize);

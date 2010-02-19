@@ -22,16 +22,29 @@ public interface Constants extends BaseColumns {
     int INITIAL_INTENSITY = 2;
     
     /**
-     * Word sizes range from 0 to this number, inclusive.
+     * Word intensities range from 0 to this number, inclusive.
      */
     int MAX_INTENSITY = 4;
-    
-    int DATE_RANGE_DIALOG = 1000;
 
     String LOG_ENTRIES_TABLE = "log_entries";
-    String INTENSITY_COL = "word_size";
-    String WORD_COL = "word";
+    String INTENSITY_COL = "intensity";
+    String WORD_ID_COL = "word_id";
     String ENTERED_ON_COL = "entered_on";
+
+    String WORD_REF_TABLE = "words";
+    String WORD_COL = "word";
+    String[] LOG_CURSOR_COLS = {
+             WORD_COL,
+             "entry_date",
+             "entry_time",
+             INTENSITY_COL,
+             _ID
+     };
+    String[] WORD_CURSOR_COLS = {
+            WORD_COL, _ID
+    };
+
+
     int CONTEXT_MENU_DELETE_ITEM = 1;
     int CONTEXT_MENU_EDIT_ITEM = 2;
     int CONFIRM_DELETE_DIALOG = 1;
