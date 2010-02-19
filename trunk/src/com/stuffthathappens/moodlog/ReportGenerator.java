@@ -33,7 +33,8 @@ public class ReportGenerator {
         // TODO if numDays is -1 this is broken
 
         try {
-            db = data.getReadableDatabase();
+            db = data.getWritableDatabase();
+            // TODO move this query to the MoodLogData class
             cursor = db.query(LOG_ENTRIES_TABLE,
                     new String[] { WORD_COL, INTENSITY_COL, ENTERED_ON_COL },
                     ENTERED_ON_COL + " > ?",

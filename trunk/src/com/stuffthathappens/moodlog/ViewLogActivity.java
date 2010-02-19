@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.MenuItem;
@@ -18,26 +17,16 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static android.provider.BaseColumns._ID;
 import static com.stuffthathappens.moodlog.Constants.*;
 
 public class ViewLogActivity extends ListActivity {
 
-    private static final String[] FROM_COLS = {
-            WORD_COL,
-            "entry_date",
-            "entry_time",
-            INTENSITY_COL,
-            _ID
-    };
     private static final int[] TO = {
             R.id.log_item_word,
             R.id.log_item_date,
             R.id.log_item_time,
             R.id.log_item_word
     };
-
-    Date date = new Date();
 
     private MoodLogData data;
     private Cursor logCursor;
@@ -48,10 +37,7 @@ public class ViewLogActivity extends ListActivity {
     private static final int DATE_COL_INDEX = 1;
     private static final int TIME_COL_INDEX = 2;
 
-    private static final int WORD_SIZE_COL_INDEX = 3;
-
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-    private final SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm:ss a");
+    private static final int INTENSITY_COL_INDEX = 3;
 
     private static final int[] ROW_BACKGROUNDS = new int[]{
             R.color.log_even_row_background,
@@ -74,11 +60,13 @@ public class ViewLogActivity extends ListActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        getAllEntries();
+
+        logCursor = getMoodLogData().getLogCursor();
+        startManagingCursor(logCursor);
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
                 R.layout.log_list_item,
                 logCursor,
-                FROM_COLS,
+                LOG_CURSOR_COLS,
                 TO) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
@@ -132,17 +120,6 @@ public class ViewLogActivity extends ListActivity {
         return false;
     }
 
-    private void getAllEntries() {
-        String sql = String.format("" +
-                "select %s, %s as entry_date, %s as entry_time, %s, %s from %s order by %s desc",
-                WORD_COL, ENTERED_ON_COL, ENTERED_ON_COL, INTENSITY_COL, _ID,
-                LOG_ENTRIES_TABLE, ENTERED_ON_COL);
-
-        SQLiteDatabase db = getMoodLogData().getReadableDatabase();
-        logCursor = db.rawQuery(sql, null);
-        startManagingCursor(logCursor);
-    }
-
     @Override
     protected Dialog onCreateDialog(int id) {
         if (id == CONFIRM_DELETE_DIALOG) {
@@ -151,7 +128,8 @@ public class ViewLogActivity extends ListActivity {
                     .setMessage(R.string.confirm_delete_entry_msg)
                     .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            doDeleteLogEntry(selectedId);
+                            getMoodLogData().deleteLogEntry(selectedId);
+                            refreshLog();
                             dialog.dismiss();
                         }
                     })
@@ -165,13 +143,6 @@ public class ViewLogActivity extends ListActivity {
         return super.onCreateDialog(id);
     }
 
-    private void doDeleteLogEntry(long victim) {
-        SQLiteDatabase db = getMoodLogData().getWritableDatabase();
-
-        db.delete(LOG_ENTRIES_TABLE, _ID + " = " + victim, null);
-        refreshLog();
-    }
-
     private void refreshLog() {
         if (logCursor != null) {
             logCursor.requery();
@@ -179,6 +150,9 @@ public class ViewLogActivity extends ListActivity {
     }
 
     private class LogBinder implements SimpleCursorAdapter.ViewBinder {
+        private final Date date = new Date();
+        private final SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        private final SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm:ss a");
 
         public boolean setViewValue(View view, Cursor cursor, int column) {
             switch (column) {
@@ -193,9 +167,9 @@ public class ViewLogActivity extends ListActivity {
                     date.setTime(cursor.getLong(column));
                     ((TextView) view).setText(timeFormat.format(date));
                     return true;
-                case WORD_SIZE_COL_INDEX:
-                    int wordSize = cursor.getInt(column);
-                    ((TextView) view).setTextSize(12f + wordSize * 3);
+                case INTENSITY_COL_INDEX:
+                    int intensity = cursor.getInt(column);
+                    ((TextView) view).setTextSize(12f + intensity * 3);
                     return true;
             }
             return false;

@@ -8,12 +8,12 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
 
     private final Date date;
     private final String word;
-    private final int size;
+    private final int intensity;
 
-    public LogEntry(Date date, String word, int size) {
+    public LogEntry(Date date, String word, int intensity) {
         this.date = date;
         this.word = word;
-        this.size = size;
+        this.intensity = intensity;
     }
 
     public Date getDate() {
@@ -24,8 +24,8 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
         return word;
     }
 
-    public int getSize() {
-        return size;
+    public int getIntensity() {
+        return intensity;
     }
 
     public int compareTo(LogEntry rhs) {
@@ -34,7 +34,7 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
         if (c == 0) {
             c = word.compareTo(rhs.word);
             if (c == 0) {
-                c = Integer.valueOf(size).compareTo(rhs.size);
+                c = Integer.valueOf(intensity).compareTo(rhs.intensity);
             }
         }
         return c;
