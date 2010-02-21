@@ -179,6 +179,7 @@ public class HomeActivity extends ListActivity implements OnClickListener,
         if (wordsCursor != null) {
             wordsCursor.moveToPosition(position);
             wordEditor.setText(wordsCursor.getString(WORD_COL_INDEX));
+            startLogWordActivity();
         }
     }
 
@@ -209,18 +210,23 @@ public class HomeActivity extends ListActivity implements OnClickListener,
 
     public void onClick(View src) {
         if (src == logButton) {
-            String word = getTypedWord();
-
-            if (word != null) {
-                hideSoftKeyboard();
-                Intent intent = new Intent(this, LogWordActivity.class);
-                intent.putExtra(EXTRA_WORD, word);
-                startActivityForResult(intent, LOG_WORD_REQ_CD);
-            } else {
-                // this shouldn't happen, but just to be defensive...
-                updateEnabledStates();
-            }
+            startLogWordActivity();
         }
+    }
+
+    private void startLogWordActivity() {
+        String word = getTypedWord();
+
+        if (word != null) {
+            hideSoftKeyboard();
+            Intent intent = new Intent(this, LogWordActivity.class);
+            intent.putExtra(EXTRA_WORD, word);
+            startActivityForResult(intent, LOG_WORD_REQ_CD);
+        } else {
+            // this shouldn't happen, but just to be defensive...
+            updateEnabledStates();
+        }
+
     }
 
     @Override
