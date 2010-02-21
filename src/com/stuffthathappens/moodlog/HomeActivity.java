@@ -127,6 +127,7 @@ public class HomeActivity extends ListActivity implements OnClickListener,
         switch (item.getItemId()) {
             case CONTEXT_MENU_EDIT_ITEM:
                 Intent i = new Intent(this, EditWordActivity.class);
+                i.putExtra(EXTRA_ORIG_WORD_ID, selectedWordId);
                 i.putExtra(EXTRA_WORD, selectedWord);
                 startActivityForResult(i, EDIT_WORD_REQ_CD);
                 return true;
@@ -237,10 +238,10 @@ public class HomeActivity extends ListActivity implements OnClickListener,
                 getMoodLogData().insertLogEntry(word, intensity);
                 Toast.makeText(this, "Logged " + word, Toast.LENGTH_SHORT).show();
             } else if (requestCode == EDIT_WORD_REQ_CD) {
-                String origWord = data.getStringExtra(EXTRA_WORD);
+                long origWordId = data.getLongExtra(EXTRA_ORIG_WORD_ID, -1L);
                 String updatedWord = data.getStringExtra(EXTRA_UPDATED_WORD);
 
-                getMoodLogData().updateWord(origWord, updatedWord);
+                getMoodLogData().updateWord(origWordId, updatedWord);
                 wordEditor.setText(null);
                 Toast.makeText(this, "Edited " + updatedWord, Toast.LENGTH_SHORT).show();
             }

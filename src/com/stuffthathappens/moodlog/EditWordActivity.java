@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import static com.stuffthathappens.moodlog.Constants.EXTRA_UPDATED_WORD;
 import static com.stuffthathappens.moodlog.Constants.EXTRA_WORD;
+import static com.stuffthathappens.moodlog.Constants.EXTRA_ORIG_WORD_ID;
 
 /**
  * @author Eric Burke
@@ -21,6 +22,7 @@ public class EditWordActivity extends Activity {
     private Button saveBtn;
 
     private String origWord;
+    private long origWordId;
     private EditText updatedWord;
 
     @Override
@@ -47,6 +49,7 @@ public class EditWordActivity extends Activity {
 
         Intent intent = getIntent();
         origWord = intent.getExtras().getString(EXTRA_WORD);
+        origWordId = intent.getExtras().getLong(EXTRA_ORIG_WORD_ID);
 
         ((TextView) findViewById(R.id.original_word)).setText(origWord);
         updatedWord = (EditText) findViewById(R.id.updated_word);
@@ -75,7 +78,7 @@ public class EditWordActivity extends Activity {
         hideSoftKeyboard();
 
         Intent i = new Intent();
-        i.putExtra(EXTRA_WORD, origWord);
+        i.putExtra(EXTRA_ORIG_WORD_ID, origWordId);
         i.putExtra(EXTRA_UPDATED_WORD, getUpdatedWord());
         setResult(RESULT_OK, i);
         finish();
