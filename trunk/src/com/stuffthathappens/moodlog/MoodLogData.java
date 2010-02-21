@@ -51,40 +51,58 @@ public class MoodLogData extends SQLiteOpenHelper {
      * If the proposed new name exists, log entries from the original word are merged
      * to use the updated word's identifier.
      */
-    public void updateWord(String origWord, String updatedWord) {
+    public void updateWord(long origWordId, String newWord) {
         SQLiteDatabase db = getWritableDatabase();
-
-        long updatedWordId = findWordId(db, updatedWord);
-        if (updatedWordId == -1L) {
-            // the updated word name is not taken, so a simple update is possible
+        db.beginTransaction();
+        try {
+            // see if the proposed new word already exists
+            long existingWordId = findWordId(db, newWord);
             ContentValues values = new ContentValues();
-            values.put(WORD_COL, updatedWord);
-            db.update(WORD_REF_TABLE, values, WORD_COL + " = ?",
-                    new String[]{origWord});
-        } else {
-            // the proposed name is already taken, so merge existing log entries
-            // into the updated word
-            // TODO
-            throw new RuntimeException("merge not implemented");
+            if (existingWordId == -1L || existingWordId == origWordId) {
+                // the new word name is not taken, so a simple update is possible
+                values.put(WORD_COL, newWord);
+                db.update(WORD_REF_TABLE, values, _ID + " = " + origWordId, null);
+            } else {
+                // the proposed name is already taken, so merge existing log entries
+                // using the orig word to use the ID of the new word.
+                values.put(WORD_ID_COL, existingWordId);
+                db.update(LOG_ENTRIES_TABLE, values, WORD_ID_COL + " = " + origWordId, null);
+
+                // delete the original word
+                db.delete(WORD_REF_TABLE, _ID + " = " + origWordId, null);
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
         }
 
     }
 
+    /**
+     * \     * @return the newly added log entry ID.
+     */
     public long insertLogEntry(String word, int intensity) {
         SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        try {
 
-        // make sure the word exists in the reference table
-        long wordId = findWordId(db, word);
-        if (wordId == -1) {
-            wordId = insertWord(db, word);
+            // make sure the word exists in the reference table
+            long wordId = findWordId(db, word);
+            if (wordId == -1) {
+                wordId = insertWord(db, word);
+            }
+
+            // now insert the log entry
+            ContentValues values = new ContentValues();
+            values.put(ENTERED_ON_COL, System.currentTimeMillis());
+            values.put(WORD_ID_COL, wordId);
+            values.put(INTENSITY_COL, intensity);
+            long logEntryId = db.insertOrThrow(LOG_ENTRIES_TABLE, null, values);
+            db.setTransactionSuccessful();
+            return logEntryId;
+        } finally {
+            db.endTransaction();
         }
-
-        // now insert the log entry
-        ContentValues values = new ContentValues();
-        values.put(ENTERED_ON_COL, System.currentTimeMillis());
-        values.put(WORD_ID_COL, wordId);
-        values.put(INTENSITY_COL, intensity);
-        return db.insertOrThrow(LOG_ENTRIES_TABLE, null, values);
     }
 
     /**
@@ -229,6 +247,10 @@ public class MoodLogData extends SQLiteOpenHelper {
     }
 
     /**
+     * Find a word in the reference table, performing case-insensitive comparison.
+     *
+     * @param db an open database.
+     * @param word the word to find, case insensitive.
      * @return the id of the matching word, or -1 if not found.
      */
     private long findWordId(SQLiteDatabase db, String word) {
@@ -236,8 +258,8 @@ public class MoodLogData extends SQLiteOpenHelper {
         try {
             c = db.query(WORD_REF_TABLE,
                     new String[]{_ID},
-                    WORD_COL + " = ?",
-                    new String[]{word},
+                    "upper(" + WORD_COL + ") = ?",
+                    new String[]{word.toUpperCase()},
                     null,
                     null,
                     null);

@@ -10,6 +10,12 @@ public interface Constants extends BaseColumns {
     String EXTRA_WORD = "com.stuffthathappens.moodlog.word";
 
     /**
+     * When editing a word, this holds the original ID before the edit.
+     */
+
+    String EXTRA_ORIG_WORD_ID = "com.stuffthathappens.moodlog.orig.word.id";
+
+    /**
      * When editing a word, this indicates the intent holds the updated word.
      */
     String EXTRA_UPDATED_WORD = "com.stuffthathappens.moodlog.updated.word";
