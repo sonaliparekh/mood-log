@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.Calendar;
+
 import static com.stuffthathappens.moodlog.Constants.*;
 
 /**
@@ -169,21 +171,38 @@ public class MoodLogData extends SQLiteOpenHelper {
     }
 
     /**
-     * @return a cursor over all log entries, newest entries come first.
-     * @see Constants#LOG_CURSOR_COLS
+     *
+     * @param numDays the number of days to retrieve, or -1 to get all.
      */
-    public Cursor getLogCursor() {
+    public Cursor getLogCursor(int numDays) {
+        String dayFilter = "";
+        if (numDays > -1) {
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DATE, -numDays);
+            dayFilter = " and " + ENTERED_ON_COL + " > " + cal.getTimeInMillis();
+        }
+
+
         String sql = String.format("" +
                 "select %s, %s as entry_date, %s as entry_time, %s, " +
                 "%s.%s from %s, %s " +
-                "where %s.%s = %s.%s " +
-                "order by %s desc",
+                "where %s.%s = %s.%s" +
+                dayFilter +
+                " order by %s desc",
                 WORD_COL, ENTERED_ON_COL, ENTERED_ON_COL, INTENSITY_COL,
                 LOG_ENTRIES_TABLE, _ID, LOG_ENTRIES_TABLE, WORD_REF_TABLE,
                 LOG_ENTRIES_TABLE, WORD_ID_COL, WORD_REF_TABLE, _ID,
                 ENTERED_ON_COL);
 
         return getWritableDatabase().rawQuery(sql, null);
+    }
+
+    /**
+     * @return a cursor over all log entries, newest entries come first.
+     * @see Constants#LOG_CURSOR_COLS
+     */
+    public Cursor getLogCursor() {
+        return getLogCursor(-1);
     }
 
     public void deleteLogEntry(long logEntryId) {
