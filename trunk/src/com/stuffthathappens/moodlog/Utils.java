@@ -84,4 +84,27 @@ public class Utils {
             }
         }
     }
+
+    public static String escapeHtml(String s) {
+        StringBuilder sb = new StringBuilder();
+        for (char ch : s.toCharArray()) {
+            switch (ch) {
+                case '<':
+                    sb.append("&lt;");
+                    break;
+                case '>':
+                    sb.append("&gt;");
+                    break;
+                case '&':
+                    sb.append("&amp;");
+                    break;
+                case '"':
+                    sb.append("&quot;");
+                    break;
+                default:
+                    sb.append(ch);
+            }
+        }        
+        return sb.toString();
+    }
 }
