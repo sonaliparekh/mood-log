@@ -1,7 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               style="@style/button_bar">
 
-    <Button android:layout_width="wrap_content"
+    <Button android:layout_width="0px"
             android:layout_height="wrap_content"
             android:id="@+id/save_btn"
             android:text="@string/save"
@@ -9,7 +9,7 @@
             android:layout_marginLeft="6dp"
             android:layout_marginRight="3dp"/>
 
-    <Button android:layout_width="wrap_content"
+    <Button android:layout_width="0px"
             android:layout_height="wrap_content"
             android:id="@+id/cancel_btn"
             android:text="@string/cancel"
