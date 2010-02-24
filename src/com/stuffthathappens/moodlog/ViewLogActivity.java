@@ -169,7 +169,7 @@ public class ViewLogActivity extends ListActivity {
                     return true;
                 case INTENSITY_COL_INDEX:
                     int intensity = cursor.getInt(column);
-                    ((TextView) view).setTextSize(12f + intensity * 3);
+                    ((TextView) view).setTextSize(12f + intensity * 5);
                     return true;
             }
             return false;
