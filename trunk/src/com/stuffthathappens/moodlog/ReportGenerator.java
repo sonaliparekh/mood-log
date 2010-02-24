@@ -44,32 +44,26 @@ public class ReportGenerator {
             pw.println("<html><head><title>Mood Log Report</title></head><body>");
             pw.println("<h1>Mood Log Report</h1>");
 
-            long prevDate = -1;
+            pw.println("<table cellspacing='0' cellpadding='4' border='1'>");
+            pw.println("<tr>");
+            pw.println("<th>Date</th><th>Time</th><th>Intensity</th><th>Mood</th>");
+            pw.println("</tr>");
+
             while (cursor.moveToNext()) {
                 long curDate = cursor.getLong(cursor.getColumnIndex("entry_date"));
                 reusableDate.setTime(curDate);
-                if (curDate != prevDate) {
-                    pw.print("<h3>");
-                    pw.print(dateFormat.format(reusableDate));
-                    pw.println("</h3>");
-                    prevDate = curDate;
-                }
-                pw.print("<p><em>");
-                pw.print(timeFormat.format(curDate));
-                pw.println("</em></p>");
 
                 int intensity = cursor.getInt(cursor.getColumnIndex(Constants.INTENSITY_COL));
                 String word = cursor.getString(cursor.getColumnIndex(Constants.WORD_COL));
 
-                int fontSize = 10 + (intensity * 4);
-                pw.print("<p><font size='");
-                pw.print(fontSize);
-                pw.print("'>");
-                pw.print(intensity + 1);
-                pw.print(" - ");
-                pw.print(Utils.escapeHtml(word));
-                pw.println("</font></p>");
+                pw.println("<tr valign='top'>");
+                pw.format("<td>%s</td>", dateFormat.format(reusableDate));
+                pw.format("<td>%s</td>", timeFormat.format(reusableDate));
+                pw.format("<td>%d</td>", intensity + 1);
+                pw.format("<td>%s</td>", Utils.escapeHtml(word));
+                pw.println("</tr>");
             }
+            pw.println("</table>");
 
             pw.println("</body></html>");
 
