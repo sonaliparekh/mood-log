@@ -11,7 +11,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,8 +19,7 @@ import android.widget.*;
 
 import static com.stuffthathappens.moodlog.Constants.*;
 
-public class HomeActivity extends ListActivity implements OnClickListener,
-        TextWatcher {
+public class HomeActivity extends ListActivity implements TextWatcher {
 
     private static final String TAG = "HomeActivity";
 
@@ -51,11 +49,31 @@ public class HomeActivity extends ListActivity implements OnClickListener,
         wordEditor = (EditText) findViewById(R.id.word_entry);
 
         wordEditor.addTextChangedListener(this);
-        logButton.setOnClickListener(this);
 
         final ListView listView = getListView();
         listView.setTextFilterEnabled(true);
         listView.setOnCreateContextMenuListener(this);
+
+        logButton.setOnClickListener(new OnClickListener() {
+            public void onClick(View view) {
+                startLogWordActivity();
+            }
+        });
+        findViewById(R.id.view_log_btn).setOnClickListener(new OnClickListener() {
+            public void onClick(View view) {
+                viewLog();
+            }
+        });
+        findViewById(R.id.mail_report_btn).setOnClickListener(new OnClickListener() {
+            public void onClick(View view) {
+                mailReport();
+            }
+        });
+        findViewById(R.id.help_btn).setOnClickListener(new OnClickListener() {
+            public void onClick(View view) {
+                showHelp();
+            }
+        });
     }
 
     @Override
@@ -164,17 +182,6 @@ public class HomeActivity extends ListActivity implements OnClickListener,
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-
-        boolean empty = getMoodLogData().isLogEmpty();
-
-        menu.findItem(R.id.mail_report_menu_item).setEnabled(!empty);
-        menu.findItem(R.id.view_log_menu_item).setEnabled(!empty);
-
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         if (wordsCursor != null) {
             wordsCursor.moveToPosition(position);
@@ -183,35 +190,19 @@ public class HomeActivity extends ListActivity implements OnClickListener,
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.home, menu);
-        return true;
+    private void mailReport() {
+        hideSoftKeyboard();
+        startActivity(new Intent(this, MailReportActivity.class));
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.help_menu_item:
-                hideSoftKeyboard();
-                startActivity(new Intent(this, HelpActivity.class));
-                return true;
-            case R.id.view_log_menu_item:
-                hideSoftKeyboard();
-                startActivity(new Intent(this, ViewLogActivity.class));
-                return true;
-            case R.id.mail_report_menu_item:
-                hideSoftKeyboard();
-                startActivity(new Intent(this, MailReportActivity.class));
-                return true;
-        }
-        return false;
+    private void showHelp() {
+        hideSoftKeyboard();
+        startActivity(new Intent(this, HelpActivity.class));
     }
 
-    public void onClick(View src) {
-        if (src == logButton) {
-            startLogWordActivity();
-        }
+    private void viewLog() {
+        hideSoftKeyboard();
+        startActivity(new Intent(this, ViewLogActivity.class));
     }
 
     private void startLogWordActivity() {

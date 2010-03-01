@@ -25,7 +25,7 @@
         <Button android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/back_btn"
-                android:text="@string/back"
+                android:text="@string/back_btn_text"
                 android:paddingLeft="40dp"
                 android:paddingRight="40dp"/>
     </LinearLayout>

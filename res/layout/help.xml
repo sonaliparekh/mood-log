@@ -1,15 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="#ffffff"
-    >
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#ffffff"
+        >
+
+    <TextView style="@style/title_heading"
+              android:text="@string/help_heading"/>
+
 
     <WebView android:id="@+id/helpWebView"
-             android:layout_width="wrap_content"
+             android:layout_width="fill_parent"
              android:layout_height="wrap_content"
-    />
+             android:layout_weight="1"
+            />
+
+    <LinearLayout style="@style/button_bar">
+
+        <Button android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/back_btn"
+                android:text="@string/back_btn_text"
+                android:paddingLeft="40dp"
+                android:paddingRight="40dp"/>
+    </LinearLayout>
 
 </LinearLayout>
