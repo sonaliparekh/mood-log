@@ -5,6 +5,7 @@
         <item name="android:textColor">#ff000000</item>
         <item name="android:buttonStyle">@style/Button</item>
         <item name="android:imeOptions">actionDone</item>
+        <item name="android:typeface">serif</item>
     </style>
 
     <style parent="@android:style/Theme.Dialog" name="MoodLogDialog">
