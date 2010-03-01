@@ -2,6 +2,7 @@ package com.stuffthathappens.moodlog;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
 import android.webkit.WebView;
 
 public class HelpActivity extends Activity {
@@ -15,6 +16,11 @@ public class HelpActivity extends Activity {
         String html = Utils.loadResToString(R.raw.help, this, "utf-8");
         webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
 
+        findViewById(R.id.back_btn).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
 }

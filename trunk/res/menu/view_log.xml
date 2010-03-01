@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
-  xmlns:android="http://schemas.android.com/apk/res/android">
+        xmlns:android="http://schemas.android.com/apk/res/android">
 
-<item android:id="@+id/mail_report_menu_item" android:title="@string/mail_report"></item><item android:id="@+id/help_menu_item" android:title="@string/help_menu_title"></item>
+    <item android:id="@+id/mail_report_menu_item"
+          android:title="@string/mail_report"></item>
+    <item android:id="@+id/help_menu_item"
+          android:title="@string/help_menu_title"></item>
 </menu>
